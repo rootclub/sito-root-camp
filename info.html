@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="it" data-tone="ironico">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Info pratiche · /RooT-Camp 2026</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <style>
+    .page-hero {
+      background: #0094de url("assets/sky-banded.png") top left / auto 100% repeat-x;
+      padding: 80px 0 60px;
+      min-height: 455px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero .hero-sun { width: 200px; height: 200px; top: 90px; right: 8%; }
+
+    /* TOC sticky */
+    .toc {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 14px 0;
+      margin-bottom: 24px;
+      border-bottom: 2px dashed var(--ink);
+      position: sticky;
+      top: 64px;
+      background: var(--cream);
+      z-index: 10;
+    }
+    .toc a {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      background: var(--cream);
+      box-shadow: 2px 2px 0 var(--ink);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .toc a:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); color: var(--ink); }
+
+    .info-section { padding: 64px 0; scroll-margin-top: 120px; }
+    .info-section + .info-section { border-top: 2px dashed rgba(15,42,26,.18); }
+
+    .lede {
+      font-size: clamp(20px, 2.2vw, 28px);
+      max-width: 48ch;
+      margin: 14px 0 32px;
+      line-height: 1.4;
+    }
+
+    /* food cards */
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+      margin-top: 28px;
+    }
+    .food-card {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      padding: 24px;
+      box-shadow: 4px 4px 0 var(--ink);
+      transition: transform .14s ease;
+    }
+    .food-card:hover { transform: translate(-2px,-2px) rotate(-.4deg); }
+    .food-card.alt-1 { background: var(--sun); }
+    .food-card.alt-2 { background: var(--grass-1); }
+    .food-card.alt-3 { background: var(--sky-1); }
+    .food-card.alt-4 { background: var(--cream); border-style: dashed; }
+    .food-card .ico {
+      font-size: 32px; margin-bottom: 12px;
+      font-family: var(--font-hand); color: var(--hot); line-height: 1;
+    }
+
+    /* Tessera a foratura — illustrazione */
+    .punchcard-wrap {
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: var(--r-lg);
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 36px;
+      align-items: center;
+      box-shadow: 6px 6px 0 var(--hot);
+      margin-top: 36px;
+    }
+    @media (max-width: 800px) { .punchcard-wrap { grid-template-columns: 1fr; } }
+    .punchcard {
+      background: var(--sun);
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 18px;
+      position: relative;
+      transform: rotate(-2deg);
+      box-shadow: 4px 4px 0 var(--cream);
+    }
+    .punchcard h4 { font-family: var(--font-display); font-size: 18px; margin-bottom: 4px; }
+    .punchcard .pc-sub { font-family: var(--font-ui); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; opacity: .75; margin-bottom: 14px; }
+    .punchcard .holes {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 8px;
+    }
+    .punchcard .hole {
+      aspect-ratio: 1;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-ui); font-size: 10px; font-weight: 700;
+    }
+    .punchcard .hole.punched {
+      background: var(--ink);
+      color: var(--ink);
+      position: relative;
+    }
+    .punchcard .hole.punched::after {
+      content: "✕";
+      position: absolute; color: var(--hot);
+      font-size: 14px; font-weight: 700;
+      transform: rotate(15deg);
+    }
+
+    /* sleep */
+    .sleep-list { display: grid; gap: 22px; margin-top: 28px; }
+    .sleep-card {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      gap: 24px;
+      align-items: center;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      padding: 24px;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    @media (max-width: 700px) {
+      .sleep-card { grid-template-columns: 70px 1fr; }
+      .sleep-tag { grid-column: 1 / -1; }
+    }
+    .sleep-card.kind-camping  { background: var(--grass-1); }
+    .sleep-card.kind-indoor   { background: var(--sky-1); }
+    .sleep-card.kind-offsite  { background: var(--cream); border-style: dashed; }
+    .sleep-icon {
+      width: 90px; height: 90px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sleep-tag {
+      font-family: var(--font-ui); font-size: 11px;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: 6px 12px;
+      background: var(--ink); color: var(--cream);
+      border-radius: 999px;
+    }
+    .sleep-card.kind-offsite .sleep-tag { background: var(--ink-dim); }
+
+    /* contatti */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+      margin-top: 28px;
+    }
+    .contact-card {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      padding: 24px;
+      box-shadow: 4px 4px 0 var(--ink);
+      text-decoration: none;
+      color: var(--ink);
+      display: block;
+      transition: transform .14s ease;
+    }
+    .contact-card:hover { transform: translate(-2px,-2px); color: var(--ink); }
+    .contact-card .ch-label {
+      font-family: var(--font-ui); font-size: 11px;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--ink-dim); margin-bottom: 10px;
+    }
+    .contact-card .ch-value {
+      font-family: var(--font-display); font-size: 18px; font-weight: 700;
+      word-break: break-word;
+    }
+
+    /* mappa-where */
+    .where-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+    @media (max-width: 800px) { .where-block { grid-template-columns: 1fr; } }
+    .where-info {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      padding: 24px;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    .where-map {
+      background: var(--grass-1);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      box-shadow: 4px 4px 0 var(--ink);
+      min-height: 260px;
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1138 / 905;
+    }
+    .where-map svg { width: 100%; height: 100%; display: block; }
+    .where-map .satellite {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .where-map .map-overlay {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+
+    /* simple labels — flat tag, no pointer */
+    .map-label-simple {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      line-height: 1.25;
+      color: var(--ink);
+      background: var(--cream);
+      border: 1.5px solid var(--ink);
+      border-radius: 4px;
+      padding: 6px 10px;
+      box-shadow: 2px 2px 0 var(--ink);
+      text-align: center;
+      white-space: normal;
+    }
+
+    /* callout (fumetto) — dot at coord + line to bubble */
+    .map-callout {
+      position: absolute;
+      width: 0; height: 0;
+    }
+    .map-callout .pin {
+      position: absolute;
+      left: -7px; top: -7px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--hot);
+      border: 2px solid var(--ink);
+      box-shadow: 0 0 0 3px rgba(255,254,245,.7);
+    }
+    .map-callout .leader {
+      position: absolute;
+      left: 0; top: 0;
+      height: 1.5px;
+      background: var(--ink);
+      transform-origin: 0 50%;
+    }
+    .map-callout .bubble {
+      position: absolute;
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--ink);
+      background: var(--cream);
+      border: 1.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 6px 12px;
+      box-shadow: 2px 2px 0 var(--ink);
+      white-space: nowrap;
+    }
+    /* directional placement — sets bubble corner anchored to leader endpoint */
+    .map-callout[data-dir="ne"] .leader { transform: rotate(-30deg); }
+    .map-callout[data-dir="ne"] .bubble { left: 44px; top: -34px; }
+    .map-callout[data-dir="nw"] .leader { transform: rotate(-150deg); }
+    .map-callout[data-dir="nw"] .bubble { right: 44px; top: -34px; left: auto; }
+    .map-callout[data-dir="se"] .leader { transform: rotate(30deg); }
+    .map-callout[data-dir="se"] .bubble { left: 44px; top: 12px; }
+    .map-callout[data-dir="sw"] .leader { transform: rotate(150deg); }
+    .map-callout[data-dir="sw"] .bubble { right: 44px; top: 12px; left: auto; }
+    .map-callout[data-dir="n"] .leader { transform: rotate(-90deg); }
+    .map-callout[data-dir="n"] .bubble { left: 50%; bottom: 44px; transform: translateX(-50%); }
+    .map-callout[data-dir="s"] .leader { transform: rotate(90deg); }
+    .map-callout[data-dir="s"] .bubble { left: 50%; top: 44px; transform: translateX(-50%); }
+
+    /* legend */
+    .map-legend {
+      position: absolute;
+      left: 14px; bottom: 14px;
+      background: var(--cream);
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      padding: 8px 12px;
+      box-shadow: 2px 2px 0 var(--ink);
+      font-family: var(--font-ui);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .map-legend .n-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 1.5px solid var(--ink);
+      display: grid; place-items: center;
+      font-family: var(--font-display);
+      font-size: 11px; font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+    .where-info dl { margin: 0; display: grid; gap: 10px; }
+    .where-info dt {
+      font-family: var(--font-ui); font-size: 11px;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--ink-dim); margin-top: 6px;
+    }
+    .where-info dd {
+      margin: 0 0 6px; font-size: 17px; font-weight: 600;
+    }
+  </style>
+  <template id="__bundler_thumbnail" data-bg-color="#c7e38a">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#c7e38a"/>
+      <text x="600" y="430" font-family="Space Grotesk, sans-serif" font-size="120" font-weight="800" text-anchor="middle" fill="#0f2a1a">Info</text>
+      <polygon points="200,560 280,440 360,560" fill="#ff6b3d" stroke="#0f2a1a" stroke-width="6"/>
+      <rect x="780" y="460" width="180" height="100" rx="10" fill="#ffd36b" stroke="#0f2a1a" stroke-width="6"/>
+    </svg>
+  </template>
+</head>
+<body>
+  <div data-slot="topbar"></div>
+
+  <section class="page-hero">
+    <div class="hero-sun" aria-hidden="true"></div>
+    <div class="cloud cloud-1" aria-hidden="true" style="top:50px;"></div>
+    <div class="wrap" style="position:relative;z-index:2;">
+      <div class="sec-eyebrow">info pratiche</div>
+      <h1 class="h-1" style="max-width:18ch;font-size:clamp(48px,7vw,96px);">
+        Tutto quello che ti serve sapere <em class="hand" style="font-style:normal;color:var(--hot);">prima di arrivare</em>.
+      </h1>
+      <p class="dim" style="max-width:52ch;margin-top:18px;font-size:18px;">
+        Cibo, sonno, posto, contatti. In una pagina sola, niente PDF da scaricare.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <nav class="toc" aria-label="Indice">
+      <a href="#dove">📍 Dove</a>
+      <a href="#mangiare">🍻 Mangiare &amp; bere</a>
+      <a href="#dormire">⛺ Dormire</a>
+      <a href="#contatti">✉️ Contatti</a>
+    </nav>
+  </div>
+
+  <!-- DOVE -->
+  <section id="dove" class="info-section">
+    <div class="wrap">
+      <div class="sec-eyebrow">01 · dove</div>
+      <h2 class="h-1" style="max-width:20ch;">
+        Fratta Terme, <span class="sketch">Bertinoro</span>.
+      </h2>
+      <p class="lede">
+        Una struttura coperta + un prato a fianco dove campeggiare. Bar, cucina, bagni e docce, piscina a portata.
+      </p>
+
+      <div class="where-block">
+        <div class="where-info">
+          <dl>
+            <dt>Indirizzo</dt>
+            <dd id="addr">via Superga 190 · Fratta Terme · Bertinoro · FC</dd>
+            <dt>In auto</dt>
+            <dd>Uscita A14 Cesena, poi 15 minuti. Parcheggio sul posto.</dd>
+            <dt>In treno</dt>
+            <dd>Stazione di Forlì, poi bus o passaggio (chiedi nel canale Telegram).</dd>
+            <dt>In bici</dt>
+            <dd>Da Forlì o Cesena ci si arriva tranquillamente... se non sei un nerd come noi.</dd>
+          </dl>
+          <div style="margin-top:18px;">
+            <a href="https://www.openstreetmap.org/?mlat=44.137441&amp;mlon=12.101859#map=18/44.137441/12.101859" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" class="btn ghost">Apri in mappa →</a>
+          </div>
+        </div>
+        <div class="where-map" aria-label="Mappa satellitare del camp">
+          <img class="satellite" src="assets/mappa-satellite.png" alt="Vista satellitare del Centro Sportivo Vasco Spazzoli" />
+          <div class="map-overlay">
+            <!-- Simple labels -->
+            <div class="map-label-simple" style="left:20.74%; top:55.80%; width:210px;">
+              Centro Sportivo<br/>Vasco Spazzoli
+            </div>
+            <div class="map-label-simple" style="left:74.96%; top:25.52%;">
+              Parcheggio
+            </div>
+
+            <!-- Callouts (fumetti) -->
+            <div class="map-callout" data-dir="ne" style="left:13.53%; top:20.22%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:50px;"></span>
+              <span class="bubble">Piscina Comunale</span>
+            </div>
+
+            <div class="map-callout" data-dir="nw" style="left:45.69%; top:27.62%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:50px;"></span>
+              <span class="bubble">Ingresso</span>
+            </div>
+
+            <div class="map-callout" data-dir="sw" style="left:45.25%; top:34.81%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:50px;"></span>
+              <span class="bubble">Check In</span>
+            </div>
+
+            <div class="map-callout" data-dir="ne" style="left:50.97%; top:39.78%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:55px;"></span>
+              <span class="bubble">Cucina</span>
+            </div>
+
+            <div class="map-callout" data-dir="sw" style="left:48.15%; top:40.55%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:50px;"></span>
+              <span class="bubble">Bar</span>
+            </div>
+
+            <div class="map-callout" data-dir="ne" style="left:50.35%; top:49.17%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:60px;"></span>
+              <span class="bubble">Struttura Evento</span>
+            </div>
+
+            <div class="map-callout" data-dir="se" style="left:55.97%; top:47.96%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:55px;"></span>
+              <span class="bubble">Area Camping</span>
+            </div>
+
+            <div class="map-callout" data-dir="se" style="left:55.36%; top:65.19%;">
+              <span class="pin"></span>
+              <span class="leader" style="width:50px;"></span>
+              <span class="bubble">Bagni</span>
+            </div>
+          </div>
+
+          <div class="map-legend">
+            <span class="n-dot">N</span>
+            <span>Vista satellitare</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANGIARE -->
+  <section id="mangiare" class="info-section" style="background:var(--cream);">
+    <div class="wrap">
+      <div class="sec-eyebrow">02 · cibo &amp; bevande</div>
+      <h2 class="h-1" style="max-width:22ch;">
+        Si mangia, <span class="sketch">si beve</span>, si pensa al prossimo talk.
+      </h2>
+      <p class="lede">
+        Si mangia bene. Si beve meglio.
+      </p>
+
+      <div class="food-grid" id="food-grid"></div>
+
+      <!-- Tessera a foratura -->
+      <div class="punchcard-wrap">
+        <div class="punchcard" aria-hidden="true">
+          <h4>/RooT-Camp · tessera</h4>
+          <div class="pc-sub">10 fori · prepagata</div>
+          <div class="holes">
+            <div class="hole punched">1</div>
+            <div class="hole punched">2</div>
+            <div class="hole punched">3</div>
+            <div class="hole">4</div>
+            <div class="hole">5</div>
+            <div class="hole">6</div>
+            <div class="hole">7</div>
+            <div class="hole">8</div>
+            <div class="hole">9</div>
+            <div class="hole">10</div>
+          </div>
+        </div>
+        <div>
+          <div class="mono" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.7;margin-bottom:10px;">come si paga</div>
+          <h3 style="font-size:clamp(28px,3.4vw,40px);margin-bottom:14px;">Niente contanti. Solo tessere a foratura.</h3>
+          <p style="opacity:.92;max-width:48ch;margin-bottom:14px;">
+            Cibo, bevande e gadget si pagano con tessere prepagate. Le compri al banco all'ingresso, le fori per ogni consumazione. Niente file, niente cassa, niente "scusa hai da cambiare 50?".
+          </p>
+          <p class="mono" style="opacity:.85;font-size:13px;">
+            → tessere da 10 / 25 / 50 fori<br>
+            → trasferibili tra amici<br>
+            → quello che avanza si rimborsa o si dona
+          </p>
+        </div>
+      </div>
+
+      <p class="dim" style="margin-top:32px;font-size:14px;">
+        Allergie, intolleranze, regimi alimentari? È un campeggio nerd non un ristorante, cerchiamo di venirci in contro eh.
+      </p>
+    </div>
+  </section>
+
+  <!-- DORMIRE -->
+  <section id="dormire" class="info-section">
+    <div class="wrap">
+      <div class="sec-eyebrow">03 · dormire</div>
+      <h2 class="h-1" style="max-width:22ch;">
+        Tre modi di passare <em class="hand" style="font-style:normal;color:var(--hot);">la notte</em>.
+      </h2>
+      <p class="lede">
+        Il prato è grande. La tua tenda è benvenuta.
+      </p>
+
+      <div class="sleep-list" id="sleep-list"></div>
+
+      <div style="margin-top:32px;padding:20px 24px;background:var(--hot);color:var(--cream);border:2px solid var(--ink);border-radius:var(--r-md);box-shadow:4px 4px 0 var(--ink);">
+        <strong style="font-family:var(--font-display);font-size:18px;">⚠️ Importante:</strong>
+        <span style="margin-left:8px;">non garantiamo il silenzio nelle ore notturne. Se sei dormiglione, porta tappi per le orecchie.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATTI -->
+  <section id="contatti" class="info-section" style="background:var(--cream);">
+    <div class="wrap">
+      <div class="sec-eyebrow">04 · contatti</div>
+      <h2 class="h-1" style="max-width:22ch;">
+        Scrivici dove ti trovi <em class="hand" style="font-style:normal;color:var(--hot);">meglio</em>.
+      </h2>
+      <p class="lede">
+        Per domande pratiche, proposte di talk, dubbi sulle tessere o per chiedere "ma posso portare il cane?". (Sì, se è educato.)
+      </p>
+
+      <div class="contact-grid" id="contact-grid"></div>
+
+      <div style="margin-top:36px;display:flex;flex-wrap:wrap;gap:16px;">
+        <a href="iscrizione.html" class="btn accent">Vai all'iscrizione →</a>
+        <a href="mailto:cfp@tab-camp.it?subject=CFP%20RooT-Camp%202026" class="btn ghost">Proponi un talk →</a>
+      </div>
+    </div>
+  </section>
+
+  <div data-slot="footer"></div>
+
+  <script src="api/edition.js.php"></script>
+  <script src="scripts/partials.js"></script>
+  <script src="scripts/runtime.js"></script>
+  <script src="scripts/info.js"></script>
+</body>
+</html>

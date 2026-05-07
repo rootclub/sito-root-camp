@@ -1,0 +1,9 @@
+# /RooT-Camp — Apache config (root)
+# Minimale: solo le direttive che funzionano sicuramente con AllowOverride limitato.
+
+Options -Indexes
+
+# Nega l'accesso diretto a file sensibili o non destinati al web.
+<FilesMatch "^(\.env|\.env\.example|\.deploy-config|.*\.sql|.*\.log|.*\.sqlite|CLAUDE\.md)$">
+    Require all denied
+</FilesMatch>

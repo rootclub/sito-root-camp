@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="it" data-tone="ironico">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy · /RooT-Camp 2026</title>
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="styles/global.css">
+  <style>
+    .page-hero {
+      background: var(--cream);
+      padding: 70px 0 40px;
+      border-bottom: 2px dashed var(--ink);
+    }
+    .page-hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      letter-spacing: -.025em;
+      max-width: 22ch;
+    }
+    .page-hero .dim { max-width: 56ch; margin-top: 16px; font-size: 18px; }
+
+    .privacy-wrap {
+      max-width: 78ch;
+      margin: 0 auto;
+      padding: 56px 0 80px;
+    }
+    .privacy-wrap section { margin-bottom: 44px; }
+    .privacy-wrap h2 {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 2.6vw, 30px);
+      letter-spacing: -.01em;
+      margin-bottom: 14px;
+      padding-top: 6px;
+      border-top: 2px dashed rgba(15,42,26,.18);
+      padding-top: 22px;
+    }
+    .privacy-wrap section:first-of-type h2 { border-top: none; padding-top: 0; }
+    .privacy-wrap p,
+    .privacy-wrap li {
+      font-family: var(--font-body, var(--font-ui));
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .privacy-wrap p { margin-bottom: 12px; }
+    .privacy-wrap ul { padding-left: 22px; margin-bottom: 12px; }
+    .privacy-wrap li { margin-bottom: 6px; }
+    .privacy-wrap a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .privacy-wrap a:hover { color: var(--hot); }
+
+    .kv-table {
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      box-shadow: 4px 4px 0 var(--ink);
+      background: var(--cream);
+      margin: 16px 0 8px;
+    }
+    .kv-table dl {
+      display: grid;
+      grid-template-columns: minmax(180px, 28%) 1fr;
+    }
+    .kv-table dt,
+    .kv-table dd {
+      padding: 12px 16px;
+      border-top: 1px solid rgba(15,42,26,.12);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      margin: 0;
+    }
+    .kv-table dt {
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-size: 11px;
+      background: rgba(15,42,26,.04);
+      color: var(--ink-dim);
+    }
+    .kv-table dl > dt:first-of-type,
+    .kv-table dl > dd:first-of-type { border-top: none; }
+
+    .meta-row {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--ink-dim);
+      letter-spacing: .04em;
+      margin-top: 32px;
+      padding-top: 18px;
+      border-top: 2px dashed rgba(15,42,26,.18);
+    }
+  </style>
+  <template id="__bundler_thumbnail" data-bg-color="#fffef5">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#fffef5"/>
+      <text x="600" y="430" font-family="Space Grotesk, sans-serif" font-size="120" font-weight="800" text-anchor="middle" fill="#0f2a1a">Privacy</text>
+    </svg>
+  </template>
+</head>
+<body>
+  <div data-slot="topbar"></div>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="sec-eyebrow">informativa privacy · art. 13 GDPR</div>
+      <h1>I tuoi dati, cosa ce ne facciamo.</h1>
+      <p class="dim">
+        Versione breve: ti chiediamo solo quello che serve per gestire l'iscrizione,
+        non lo passiamo a nessuno, lo cancelliamo quando non serve più.
+        Niente cookie di tracciamento, niente profilazione, niente analytics.
+      </p>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="privacy-wrap">
+
+      <section>
+        <h2>Chi siamo (titolare del trattamento)</h2>
+        <div class="kv-table">
+          <dl>
+            <dt>Titolare</dt>
+            <dd>Associazione Root APS</dd>
+            <dt>Contatto privacy</dt>
+            <dd><a href="mailto:presidente@rootclub.it">presidente@rootclub.it</a></dd>
+          </dl>
+        </div>
+        <p>
+          Per qualsiasi domanda relativa ai tuoi dati personali, scrivi all'email qui sopra.
+          Rispondiamo entro 30 giorni come prevede il GDPR (di solito molto prima).
+        </p>
+      </section>
+
+      <section>
+        <h2>Quali dati raccogliamo</h2>
+        <p>
+          Quando ti iscrivi al campo tramite il modulo su <a href="iscrizione.html">/iscrizione</a>
+          raccogliamo:
+        </p>
+        <ul>
+          <li><strong>Nome o nick</strong>, <strong>email</strong> e (opzionale) <strong>telefono</strong> — per gestire l'iscrizione e contattarti.</li>
+          <li><strong>Età indicativa</strong> (adulto/minorenne accompagnato/preferisco non dire) — per esigenze organizzative e di sicurezza.</li>
+          <li><strong>Pernottamento scelto</strong>, <strong>numero di tessere prepagate</strong>, <strong>allergie / regime alimentare</strong>, <strong>note libere</strong>, <strong>aree di interesse</strong> — per organizzare la logistica e il palinsesto.</li>
+          <li><strong>Indirizzo IP</strong> e <strong>user-agent</strong> del browser al momento dell'invio del modulo — per finalità di sicurezza, anti-spam e diagnostica.</li>
+          <li><strong>Data e ora del consenso</strong> a questa informativa — per dimostrare che hai accettato.</li>
+        </ul>
+        <p>
+          Sul sito pubblico <strong>non usiamo cookie di profilazione, di tracciamento, né servizi di analytics</strong>
+          (Google Analytics, Meta Pixel, ecc.). Nessun dato viene condiviso con terze parti commerciali.
+          L'unico cookie che il sito può impostare è quello di sessione, e solo se accedi al backoffice riservato:
+          è strettamente necessario al funzionamento e quindi esente da consenso ai sensi dell'art. 5(3) della Direttiva ePrivacy.
+        </p>
+      </section>
+
+      <section>
+        <h2>Perché li raccogliamo (finalità e base giuridica)</h2>
+        <ul>
+          <li>
+            <strong>Gestione iscrizione e partecipazione all'evento</strong> — base giuridica: esecuzione di misure precontrattuali su tua richiesta e successiva esecuzione del contratto (art. 6.1.b GDPR).
+          </li>
+          <li>
+            <strong>Comunicazioni di servizio</strong> relative all'evento (conferma iscrizione, info logistiche, eventuali variazioni) — stessa base.
+          </li>
+          <li>
+            <strong>Sicurezza, anti-abuso e diagnostica</strong> (IP, user-agent) — legittimo interesse del titolare a proteggere il sistema da abusi (art. 6.1.f GDPR).
+          </li>
+          <li>
+            <strong>Adempimento di obblighi di legge</strong> (eventuali richieste di Autorità) — art. 6.1.c GDPR.
+          </li>
+        </ul>
+        <p>
+          <strong>Non facciamo marketing</strong>: non ti iscriviamo a newsletter, non ti rivendiamo a nessuno,
+          non ti mandiamo promozioni. L'unica email che ricevi è quella relativa alla tua iscrizione.
+        </p>
+      </section>
+
+      <section>
+        <h2>Per quanto tempo li conserviamo</h2>
+        <p>
+          I dati dell'iscrizione vengono conservati per <strong>12 mesi dalla fine dell'evento</strong>,
+          tempo necessario per gestire eventuali rimborsi, contestazioni, comunicazioni post-evento.
+          Trascorso questo termine, i dati vengono <strong>cancellati o anonimizzati</strong>.
+        </p>
+        <p>
+          Eventuali dati conservati per obblighi di legge (es. fatturazione, se applicabile) seguono i tempi
+          di conservazione previsti dalla normativa di riferimento (di norma 10 anni per la documentazione fiscale).
+        </p>
+      </section>
+
+      <section>
+        <h2>A chi possiamo comunicare i dati</h2>
+        <p>I dati personali sono trattati da:</p>
+        <ul>
+          <li>volontari e responsabili dell'organizzazione del campo, per le sole finalità sopra indicate;</li>
+          <li>il fornitore di hosting del sito (rootclub.it / Plesk), in qualità di responsabile del trattamento — server in Italia, nessun trasferimento extra-UE;</li>
+          <li>il fornitore SMTP che gestisce l'invio della mail di conferma — limitatamente ai dati necessari (nome, email, contenuto della conferma);</li>
+          <li>autorità o pubblici uffici, solo se richiesto da un obbligo di legge.</li>
+        </ul>
+        <p>
+          <strong>I dati non vengono trasferiti fuori dall'Unione Europea.</strong>
+          Non li vendiamo, non li cediamo, non li condividiamo per finalità di marketing di terzi.
+        </p>
+      </section>
+
+      <section>
+        <h2>I tuoi diritti</h2>
+        <p>In qualunque momento puoi esercitare, scrivendo a <a href="mailto:presidente@rootclub.it">presidente@rootclub.it</a>, i diritti previsti dagli artt. 15–22 GDPR:</p>
+        <ul>
+          <li><strong>Accesso</strong> ai tuoi dati e copia degli stessi;</li>
+          <li><strong>Rettifica</strong> di dati inesatti o incompleti;</li>
+          <li><strong>Cancellazione</strong> ("diritto all'oblio") quando non sussistono ragioni di conservazione;</li>
+          <li><strong>Limitazione</strong> del trattamento;</li>
+          <li><strong>Portabilità</strong> dei dati che ci hai fornito, in formato strutturato e leggibile;</li>
+          <li><strong>Opposizione</strong> al trattamento basato su legittimo interesse;</li>
+          <li><strong>Revoca</strong> del consenso, quando il trattamento si fonda su consenso (senza pregiudicare la liceità del trattamento basato sul consenso prima della revoca).</li>
+        </ul>
+        <p>
+          Hai inoltre il diritto di proporre <strong>reclamo al Garante per la protezione dei dati personali</strong>
+          (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">www.garanteprivacy.it</a>)
+          se ritieni che il trattamento dei tuoi dati violi il GDPR.
+        </p>
+      </section>
+
+      <section>
+        <h2>Conferimento dei dati</h2>
+        <p>
+          Il conferimento dei dati contrassegnati come obbligatori nel modulo di iscrizione è <strong>necessario</strong>
+          per perfezionare l'iscrizione: in mancanza, non possiamo accettarla.
+          Gli altri campi sono facoltativi e il loro mancato inserimento non ha alcuna conseguenza
+          se non, eventualmente, una nostra minor capacità di organizzare al meglio la logistica.
+        </p>
+      </section>
+
+      <section>
+        <h2>Decisioni automatizzate</h2>
+        <p>
+          Non eseguiamo profilazione né processi decisionali automatizzati che producano effetti giuridici sui partecipanti
+          (art. 22 GDPR).
+        </p>
+      </section>
+
+      <section>
+        <h2>Modifiche a questa informativa</h2>
+        <p>
+          Possiamo aggiornare questa informativa, ad esempio per riflettere modifiche organizzative o normative.
+          La versione corrente è sempre disponibile a questo indirizzo. Modifiche sostanziali verranno comunicate
+          via email agli iscritti, se rilevanti per il trattamento dei loro dati.
+        </p>
+      </section>
+
+      <p class="meta-row">
+        Ultimo aggiornamento: 3 maggio 2026
+      </p>
+    </div>
+  </main>
+
+  <div data-slot="footer"></div>
+
+  <script src="api/edition.js.php"></script>
+  <script src="scripts/partials.js"></script>
+  <script src="scripts/runtime.js"></script>
+  <script>
+    window.TAB_mountPartials('privacy');
+  </script>
+</body>
+</html>

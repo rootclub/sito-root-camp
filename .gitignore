@@ -1,0 +1,26 @@
+# --- segreti & credenziali (MAI committare) ---
+.env
+.env.local
+.env.*.local
+.deploy-config
+
+# --- artefatti locali ---
+*.log
+*.sqlite
+*.sqlite3
+.DS_Store
+Thumbs.db
+
+# --- snapshot pesanti / output ---
+# I file *standalone* sono export multi-MB di una fase di design precedente
+# (vedi CLAUDE.md). Sono outputs, non sources.
+*standalone*.html
+
+# --- temporanei / debug ---
+scraps/
+
+# --- dipendenze / build (per ora nessuna, ma futuro-proofing) ---
+node_modules/
+vendor/
+.idea/
+.vscode/

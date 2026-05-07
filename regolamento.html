@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="it" data-tone="ironico">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regolamento · /RooT-Camp 2026</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <style>
+    .page-hero {
+      background: #0094de url("assets/sky-banded.png") top left / auto 100% repeat-x;
+      padding: 80px 0 60px;
+      min-height: 455px;
+      position: relative; overflow: hidden;
+    }
+    .page-hero .hero-sun { width: 200px; height: 200px; top: 90px; right: 8%; }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-top: 36px;
+    }
+    .rule-card {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-lg);
+      padding: 28px;
+      box-shadow: 5px 5px 0 var(--ink);
+      transition: transform .14s ease, box-shadow .14s ease;
+      position: relative;
+    }
+    .rule-card:hover {
+      transform: translate(-3px,-3px) rotate(-.4deg);
+      box-shadow: 8px 8px 0 var(--ink);
+    }
+    .rule-card.alt-0 { background: var(--hot); color: var(--cream); }
+    .rule-card.alt-1 { background: var(--sun); }
+    .rule-card.alt-2 { background: var(--grass-1); }
+    .rule-card.alt-3 { background: var(--berry); color: var(--cream); }
+    .rule-card.alt-4 { background: var(--ink); color: var(--cream); }
+    .rule-card.alt-5 { background: var(--sky-1); }
+    .rule-num {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .75;
+      margin-bottom: 14px;
+    }
+    .rule-icon {
+      width: 54px; height: 54px;
+      margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,254,245,.3);
+      border: 2px solid currentColor;
+      border-radius: 50%;
+    }
+    .rule-card.alt-1 .rule-icon, .rule-card.alt-2 .rule-icon, .rule-card.alt-5 .rule-icon {
+      background: rgba(15,42,26,.08);
+    }
+    .rule-card h3 {
+      font-size: 24px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -.01em;
+    }
+    .rule-card p { font-size: 15px; line-height: 1.55; opacity: .95; }
+
+    /* timeline orari */
+    .clock-timeline {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-lg);
+      padding: 36px;
+      margin-top: 48px;
+      box-shadow: 6px 6px 0 var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+    .clock-bar {
+      position: relative;
+      height: 64px;
+      border: 2px solid var(--ink);
+      border-radius: 32px;
+      overflow: hidden;
+      margin: 24px 0 14px;
+      background: linear-gradient(90deg,
+        var(--sky-1) 0%, var(--sky-1) 65%,
+        var(--ink) 65%, var(--ink) 100%);
+    }
+    .clock-marker {
+      position: absolute;
+      top: -6px; bottom: -6px;
+      width: 3px;
+      background: var(--ink);
+    }
+    .clock-marker .label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -22px;
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .clock-marker .label.below {
+      top: auto; bottom: -22px;
+    }
+    .clock-tag {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border: 2px solid var(--ink);
+    }
+    .clock-tag.day {
+      background: var(--cream); color: var(--ink);
+      left: 18px;
+    }
+    .clock-tag.night {
+      background: var(--hot); color: var(--cream);
+      right: 18px; border-color: var(--cream);
+    }
+    .clock-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 28px;
+    }
+    @media (max-width: 700px) { .clock-legend { grid-template-columns: 1fr; } }
+    .clock-leg-card {
+      padding: 20px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+    }
+    .clock-leg-card.day-card {
+      background: var(--sky-1);
+    }
+    .clock-leg-card.night-card {
+      background: var(--ink);
+      color: var(--cream);
+    }
+    .clock-leg-card h4 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      margin-bottom: 10px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .clock-leg-card ul { padding-left: 18px; margin: 0; }
+    .clock-leg-card li { margin-bottom: 6px; font-size: 15px; }
+
+    /* dont/do */
+    .do-dont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 48px;
+    }
+    @media (max-width: 700px) { .do-dont { grid-template-columns: 1fr; } }
+    .dd-col {
+      border: 2px solid var(--ink);
+      border-radius: var(--r-lg);
+      padding: 28px;
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+    .dd-col.do  { background: var(--grass-1); }
+    .dd-col.dont { background: #ffe0d6; }
+    .dd-col h3 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      margin-bottom: 18px;
+      letter-spacing: -.01em;
+    }
+    .dd-list { display: grid; gap: 10px; }
+    .dd-list li {
+      list-style: none;
+      padding: 10px 12px;
+      background: rgba(255,254,245,.7);
+      border: 1.5px solid var(--ink);
+      border-radius: var(--r-sm);
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 15px;
+    }
+    .dd-list li::before {
+      flex-shrink: 0;
+      font-weight: 700;
+      font-family: var(--font-ui);
+    }
+    .dd-col.do  .dd-list li::before { content: "✓"; color: var(--grass-3); }
+    .dd-col.dont .dd-list li::before { content: "✕"; color: var(--hot); }
+
+    /* CTA finale */
+    .accept-block {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 48px;
+      border-radius: var(--r-lg);
+      margin-top: 64px;
+      text-align: center;
+      box-shadow: 6px 6px 0 var(--hot);
+      border: 2px solid var(--ink);
+    }
+  </style>
+  <template id="__bundler_thumbnail" data-bg-color="#ff6b3d">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#ff6b3d"/>
+      <text x="600" y="430" font-family="Space Grotesk, sans-serif" font-size="120" font-weight="800" text-anchor="middle" fill="#fffef5">Regole</text>
+      <ellipse cx="600" cy="560" rx="200" ry="40" fill="none" stroke="#fffef5" stroke-width="6"/>
+    </svg>
+  </template>
+</head>
+<body>
+  <div data-slot="topbar"></div>
+
+  <section class="page-hero">
+    <div class="hero-sun" aria-hidden="true"></div>
+    <div class="cloud cloud-1" aria-hidden="true" style="top:50px;"></div>
+    <div class="wrap" style="position:relative;z-index:2;">
+      <div class="sec-eyebrow">regolamento</div>
+      <h1 class="h-1" style="max-width:18ch;font-size:clamp(48px,7vw,96px);">
+        Sei regole, <em class="hand" style="font-style:normal;color:var(--hot);">poco negoziabili</em>.
+      </h1>
+      <p class="dim" style="max-width:52ch;margin-top:18px;font-size:18px;">
+        Poche regole, sensate. Leggile comunque.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding-top:40px;">
+    <div class="wrap">
+      <div class="rules-grid" id="rules-grid"></div>
+
+      <!-- timeline famiglie / wild -->
+      <div class="clock-timeline">
+        <div class="sec-eyebrow">orari · una giornata-tipo</div>
+        <h2 class="h-2" style="max-width:30ch;">
+          Fino alle 23 è family-friendly. Dopo, <em class="hand" style="font-style:normal;color:var(--hot);">in the wild</em>.
+        </h2>
+
+        <div class="clock-bar">
+          <div class="clock-marker" style="left:0%;"><span class="label">08:00</span></div>
+          <div class="clock-marker" style="left:25%;"><span class="label">13:00</span></div>
+          <div class="clock-marker" style="left:50%;"><span class="label">18:00</span></div>
+          <div class="clock-marker" style="left:65%;"><span class="label below">23:00 ⚡</span></div>
+          <div class="clock-marker" style="left:100%;"><span class="label">06:00</span></div>
+          <span class="clock-tag day">family-friendly</span>
+          <span class="clock-tag night">in the wild</span>
+        </div>
+
+        <div class="clock-legend">
+          <div class="clock-leg-card day-card">
+            <h4>· dalla mattina alle 23</h4>
+            <ul>
+              <li>volumi ragionevoli, contenuti per tutti</li>
+              <li>area kids attiva nel pomeriggio</li>
+              <li>talk e workshop "principali"</li>
+              <li>cibo e bevande senza limiti d'orario</li>
+            </ul>
+          </div>
+          <div class="clock-leg-card night-card">
+            <h4>· dalle 23 in poi</h4>
+            <ul>
+              <li>musica più alta, DJ set, jam</li>
+              <li>talk meno istituzionali, lightning aperti</li>
+              <li>bambini a nanna (responsabilità degli adulti)</li>
+              <li>niente silenzio garantito → tappi se dormi in tenda</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- do / dont -->
+      <div class="do-dont">
+        <div class="dd-col do">
+          <h3>Sì, decisamente</h3>
+          <ul class="dd-list">
+            <li>Porta una ciabatta, l'elettricità non basta mai</li>
+            <li>Saluta gli sconosciuti, sono il punto del camp</li>
+            <li>Lascia il tuo posto-tenda meglio di come l'hai trovato</li>
+            <li>Tappi per le orecchie se hai sonno leggero</li>
+            <li>Cane educato? Benvenuto, al guinzaglio</li>
+            <li>Foto agli amici → sì, dopo aver chiesto</li>
+          </ul>
+        </div>
+        <div class="dd-col dont">
+          <h3>No, per favore</h3>
+          <ul class="dd-list">
+            <li>Niente fuochi liberi sul prato — c'è la griglia comune</li>
+            <li>Niente foto a chi non vuole (vedi sopra)</li>
+            <li>Niente bottiglie di vetro nelle aree comuni</li>
+            <li>Niente generatori rumorosi nel campeggio</li>
+            <li>Niente comportamenti che fanno sentire qualcuno fuori posto</li>
+            <li>Niente "ma sai chi sono io" — qui no.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- closing -->
+      <div class="accept-block">
+        <div class="mono" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.7;margin-bottom:12px;">l'unica clausola che conta</div>
+        <h2 style="font-size:clamp(28px,4vw,48px);max-width:30ch;margin:0 auto 18px;">
+          Comportati come ti aspetteresti che si comporti chi ti sta accanto.
+        </h2>
+        <p style="opacity:.92;max-width:48ch;margin:0 auto 28px;">
+          Iscrivendoti accetti queste regole. Lo staff può chiedere di andarsene a chiunque le ignori — niente rimborso, niente discussione.
+        </p>
+        <a href="iscrizione.html" class="btn ghost" style="font-size:18px;">Ho capito, mi iscrivo →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <div data-slot="footer"></div>
+
+  <script src="api/edition.js.php"></script>
+  <script src="scripts/partials.js"></script>
+  <script src="scripts/runtime.js"></script>
+  <script src="scripts/regolamento.js"></script>
+</body>
+</html>

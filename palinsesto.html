@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="it" data-tone="ironico">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palinsesto · /RooT-Camp 2026</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <style>
+    /* page-specific */
+    .page-hero {
+      background: #0094de url("assets/sky-banded.png") top left / auto 100% repeat-x;
+      padding: 80px 0 60px;
+      min-height: 455px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero .hero-sun {
+      width: 200px; height: 200px; top: 90px; right: 8%;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 24px 0 36px;
+      align-items: center;
+    }
+    .filters .label {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      margin-right: 6px;
+    }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--ink);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .filter-chip:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
+    .filter-chip.on.talk     { background: var(--grass-2); }
+    .filter-chip.on.workshop { background: var(--sun); }
+    .filter-chip.on.music    { background: var(--berry); color: var(--cream); }
+    .filter-chip.on.kids     { background: var(--sky-1); }
+    .filter-chip.on.food     { background: var(--cream); border-style: dashed; }
+    .filter-chip.on.opening  { background: var(--hot); color: var(--cream); }
+    .filter-chip.on.all      { background: var(--ink); color: var(--cream); }
+
+    .day-section { margin-bottom: 64px; }
+    .day-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 2px dashed var(--ink);
+    }
+    .day-head h2 {
+      font-size: clamp(40px, 5vw, 64px);
+      letter-spacing: -.025em;
+    }
+    .day-head .date-tag {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+    }
+
+    /* lista a timeline verticale */
+    .schedule-list { display: flex; flex-direction: column; gap: 14px; }
+    .slot {
+      display: grid;
+      grid-template-columns: 110px 1fr auto;
+      gap: 18px;
+      align-items: stretch;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      padding: 18px 22px;
+      box-shadow: 4px 4px 0 var(--ink);
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .slot:hover {
+      transform: translate(-2px,-2px);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+    .slot.kind-food    { background: #fffaf0; border-style: dashed; }
+    .slot.kind-music   { background: var(--berry); color: var(--cream); }
+    .slot.kind-music .dim { color: rgba(255,254,245,.85); }
+    .slot.kind-music .keycap { background: var(--cream); color: var(--ink); }
+    .slot.kind-opening { background: var(--hot); color: var(--cream); }
+    .slot.kind-opening .dim { color: rgba(255,254,245,.85); }
+    .slot.kind-opening .keycap { background: var(--cream); color: var(--ink); }
+    .slot.kind-kids    { background: var(--sky-1); }
+    .slot.kind-talk    { background: var(--cream); }
+    .slot.kind-workshop{ background: #fff7d6; }
+
+    .slot-time {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      border-right: 1.5px solid currentColor;
+      padding-right: 14px;
+    }
+    .slot-time .duration { font-size: 11px; opacity: .7; letter-spacing: .08em; }
+    .slot-body {
+      display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    }
+    .slot-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      line-height: 1.15;
+    }
+    .slot-meta {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      font-family: var(--font-ui); font-size: 12px;
+      letter-spacing: .04em;
+    }
+    .slot-meta .speaker { font-weight: 700; }
+    .slot-side {
+      display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 6px;
+    }
+    .track-badge {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,42,26,.1);
+      border: 1.5px solid currentColor;
+    }
+    .slot.is-hidden { display: none; }
+
+    /* Descrizione espandibile — intera riga cliccabile */
+    .slot.has-desc { cursor: pointer; }
+    .slot.has-desc:focus-visible {
+      outline: 3px solid var(--hot);
+      outline-offset: 3px;
+    }
+    .slot-title { display: inline-flex; align-items: baseline; gap: 10px; }
+    .chevron {
+      display: inline-block;
+      font-size: 14px;
+      line-height: 1;
+      opacity: .55;
+      transition: transform .18s ease, opacity .18s ease;
+      transform: translateY(-2px);
+    }
+    .slot.has-desc:hover .chevron { opacity: 1; }
+    .slot.is-open .chevron {
+      transform: translateY(-2px) rotate(-180deg);
+      opacity: 1;
+    }
+    .slot-desc {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1.5px dashed currentColor;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      line-height: 1.55;
+      opacity: .92;
+      max-width: 68ch;
+      cursor: text;
+    }
+    .slot-desc a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .slot.kind-music .slot-desc a,
+    .slot.kind-opening .slot-desc a { color: var(--cream); }
+    .slot-desc[hidden] { display: none; }
+
+    @media (max-width: 700px) {
+      .slot { grid-template-columns: 80px 1fr; padding: 14px 16px; }
+      .slot-side { grid-column: 1 / -1; flex-direction: row; align-items: center; padding-top: 6px; border-top: 1.5px dashed currentColor; }
+      .slot-time { font-size: 15px; padding-right: 10px; }
+      .slot-title { font-size: 18px; }
+    }
+
+    /* legend */
+    .legend {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 22px;
+      padding: 14px 18px;
+      background: var(--cream);
+      border: 2px dashed var(--ink);
+      border-radius: var(--r-md);
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-ui); font-size: 12px; }
+    .legend-dot { width: 14px; height: 14px; border: 2px solid var(--ink); border-radius: 4px; }
+
+    /* CFP block */
+    .cfp {
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: var(--r-lg);
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 28px;
+      align-items: center;
+      box-shadow: 6px 6px 0 var(--hot);
+      border: 2px solid var(--ink);
+    }
+    @media (max-width: 800px) { .cfp { grid-template-columns: 1fr; } }
+    .cfp h3 { font-size: clamp(28px, 3.4vw, 44px); margin-bottom: 14px; }
+    .cfp .btn { background: var(--hot); border-color: var(--cream); box-shadow: 4px 4px 0 var(--cream); color: var(--cream); }
+    .cfp .btn:hover { box-shadow: 6px 6px 0 var(--cream); }
+
+    .empty-msg {
+      padding: 48px;
+      text-align: center;
+      border: 2px dashed var(--ink);
+      border-radius: var(--r-md);
+      color: var(--ink-dim);
+      font-family: var(--font-ui);
+      display: none;
+    }
+    .empty-msg.show { display: block; }
+  </style>
+  <template id="__bundler_thumbnail" data-bg-color="#bfe3f5">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#bfe3f5"/>
+      <g font-family="Space Grotesk, sans-serif" font-size="120" font-weight="800" text-anchor="middle">
+        <text x="600" y="430" fill="#0f2a1a">Palinsesto</text>
+      </g>
+      <rect x="380" y="500" width="120" height="40" rx="6" fill="#7ec04b" stroke="#0f2a1a" stroke-width="4"/>
+      <rect x="540" y="500" width="120" height="40" rx="6" fill="#ffd36b" stroke="#0f2a1a" stroke-width="4"/>
+      <rect x="700" y="500" width="120" height="40" rx="6" fill="#e8488a" stroke="#0f2a1a" stroke-width="4"/>
+    </svg>
+  </template>
+</head>
+<body>
+  <div data-slot="topbar"></div>
+
+  <section class="page-hero">
+    <div class="hero-sun" aria-hidden="true"></div>
+    <div class="cloud cloud-1" aria-hidden="true" style="top:50px;"></div>
+    <div class="wrap" style="position:relative;z-index:2;">
+      <div class="sec-eyebrow">palinsesto · 10–11 luglio 2026</div>
+      <h1 class="h-1" style="max-width:18ch;font-size:clamp(48px,7vw,96px);">
+        Talk, workshop, cibo, <em class="hand" style="font-style:normal;color:var(--hot);">musica nel prato</em>.
+      </h1>
+      <p class="dim" style="max-width:52ch;margin-top:18px;font-size:18px;">
+        In aggiornamento. I buchi si riempiono man mano che arrivano i sì.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding-top:40px;">
+    <div class="wrap">
+
+      <!-- legenda -->
+      <div class="legend" aria-label="Legenda colori">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--cream);"></span> talk</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#fff7d6;"></span> workshop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--berry);"></span> musica</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--sky-1);"></span> kids / prato</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#fffaf0;border-style:dashed;"></span> cibo</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--hot);"></span> opening / closing</span>
+      </div>
+
+      <!-- filtri -->
+      <div class="filters" role="tablist" aria-label="Filtra per tipo">
+        <span class="label">Filtra:</span>
+        <button class="filter-chip on all" data-filter="all">tutto</button>
+        <button class="filter-chip" data-filter="talk">talk</button>
+        <button class="filter-chip" data-filter="workshop">workshop</button>
+        <button class="filter-chip" data-filter="music">musica</button>
+        <button class="filter-chip" data-filter="kids">kids</button>
+        <button class="filter-chip" data-filter="food">cibo</button>
+      </div>
+
+      <div id="schedule-mount"></div>
+      <div id="empty-msg" class="empty-msg">Niente in questa categoria. Prova a togliere un filtro.</div>
+
+      <!-- CFP -->
+      <div class="cfp" style="margin-top:64px;">
+        <div>
+          <div class="mono" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.7;margin-bottom:8px;">call for proposals · aperta</div>
+          <h3>Vuoi parlare? Vuoi tenere un workshop?</h3>
+          <p style="opacity:.92;max-width:48ch;">
+            Mandaci una proposta. Talk da 30 minuti, workshop da 90, lightning da 5. Niente è troppo piccolo, quasi niente è troppo strano.
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;">
+          <a href="mailto:cfp@tab-camp.it?subject=CFP%20RooT-Camp%202026" class="btn">Manda proposta →</a>
+          <a href="iscrizione.html" class="mono" style="color:var(--cream);font-size:13px;opacity:.85;">o iscriviti come partecipante →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div data-slot="footer"></div>
+
+  <script src="api/edition.js.php"></script>
+  <script src="scripts/partials.js"></script>
+  <script src="scripts/runtime.js"></script>
+  <script src="scripts/palinsesto.js"></script>
+</body>
+</html>

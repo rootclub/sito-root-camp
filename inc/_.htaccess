@@ -1,0 +1,3 @@
+# inc/ contiene solo codice incluso da PHP. Mai accessibile via HTTP diretto.
+# (rinominato da lib/ perché il provider blocca CWD su /lib/)
+Require all denied

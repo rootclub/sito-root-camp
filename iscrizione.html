@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="it" data-tone="ironico">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iscrizione · /RooT-Camp 2026</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <style>
+    .page-hero {
+      background: linear-gradient(180deg, var(--hot) 0%, var(--sun) 100%);
+      color: var(--cream);
+      padding: 80px 0 60px;
+      position: relative; overflow: hidden;
+    }
+    .page-hero .sec-eyebrow { color: var(--cream); }
+    .page-hero .sec-eyebrow::before { background: var(--cream); }
+    .page-hero .dim { color: rgba(255,254,245,.92); }
+
+    .reg-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 36px;
+      align-items: start;
+      margin-top: 48px;
+    }
+    @media (max-width: 900px) { .reg-grid { grid-template-columns: 1fr; } }
+
+    .form-card {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-lg);
+      padding: 36px;
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+    .form-row { margin-bottom: 22px; }
+    .form-row label.lbl {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .form-row .req { color: var(--hot); margin-left: 3px; }
+    .form-row input[type="text"],
+    .form-row input[type="email"],
+    .form-row input[type="tel"],
+    .form-row input[type="number"],
+    .form-row textarea,
+    .form-row select {
+      width: 100%;
+      font-family: var(--font-display);
+      font-size: 16px;
+      padding: 12px 14px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-sm);
+      background: var(--cream);
+      box-shadow: 2px 2px 0 var(--ink);
+      transition: box-shadow .12s ease, transform .12s ease;
+    }
+    .form-row input:focus,
+    .form-row textarea:focus,
+    .form-row select:focus {
+      outline: none;
+      box-shadow: 4px 4px 0 var(--hot);
+      transform: translate(-1px,-1px);
+    }
+    .form-row textarea { min-height: 90px; resize: vertical; font-family: var(--font-body); }
+    .form-row .hint {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--ink-dim);
+      margin-top: 6px;
+    }
+
+    /* radio cards (sleep) */
+    .radio-cards { display: grid; gap: 12px; }
+    .radio-cards label {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      gap: 14px;
+      padding: 16px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      background: var(--cream);
+      transition: background .12s ease, transform .12s ease;
+    }
+    .radio-cards label:hover { background: #fffaf0; transform: translateX(2px); }
+    .radio-cards input[type="radio"] {
+      appearance: none;
+      width: 22px; height: 22px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--cream);
+      cursor: pointer;
+      margin: 2px 0 0;
+      position: relative;
+    }
+    .radio-cards input[type="radio"]:checked {
+      background: var(--hot);
+      box-shadow: inset 0 0 0 4px var(--cream);
+    }
+    .radio-cards input[type="radio"]:checked + .rc-text {
+      font-weight: 700;
+    }
+    .radio-cards label:has(input:checked) { background: var(--sun); }
+    .rc-text strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 17px;
+      letter-spacing: -.005em;
+      margin-bottom: 4px;
+    }
+    .rc-text span {
+      font-size: 14px;
+      color: var(--ink-dim);
+    }
+    .rc-price {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 13px;
+      align-self: center;
+      padding: 4px 10px;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 999px;
+    }
+    .rc-price.free { background: var(--grass-3); }
+
+    /* checkbox grid (interessi) */
+    .checks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .checks label {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      background: var(--cream);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      transition: background .12s ease;
+    }
+    .checks label:has(input:checked) { background: var(--grass-1); font-weight: 700; }
+    .checks input[type="checkbox"] {
+      appearance: none;
+      width: 18px; height: 18px;
+      border: 2px solid var(--ink);
+      background: var(--cream);
+      cursor: pointer;
+      border-radius: 4px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .checks input[type="checkbox"]:checked {
+      background: var(--hot);
+    }
+    .checks input[type="checkbox"]:checked::after {
+      content: "✓";
+      position: absolute;
+      color: var(--cream);
+      font-weight: 700;
+      font-size: 14px;
+      top: -3px; left: 2px;
+    }
+
+    /* meal slots — checkbox raggruppate per giorno */
+    .meal-grid { display: grid; gap: 18px; }
+    .meal-day {
+      display: grid;
+      gap: 8px;
+    }
+    .meal-day-head {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      font-weight: 700;
+    }
+    .meal-day-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
+    }
+    .meal-day-items label {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      background: var(--cream);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      transition: background .12s ease;
+    }
+    .meal-day-items label:has(input:checked) { background: var(--grass-1); font-weight: 700; }
+    .meal-day-items input[type="checkbox"] {
+      appearance: none;
+      width: 18px; height: 18px;
+      border: 2px solid var(--ink);
+      background: var(--cream);
+      cursor: pointer;
+      border-radius: 4px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .meal-day-items input[type="checkbox"]:checked { background: var(--hot); }
+    .meal-day-items input[type="checkbox"]:checked::after {
+      content: "✓";
+      position: absolute;
+      color: var(--cream);
+      font-weight: 700;
+      font-size: 14px;
+      top: -3px; left: 2px;
+    }
+
+    /* numeric stepper for tessera */
+    .stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-sm);
+      box-shadow: 2px 2px 0 var(--ink);
+      overflow: hidden;
+    }
+    .stepper button {
+      background: var(--cream);
+      border: none;
+      width: 38px; height: 42px;
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 700;
+      cursor: pointer;
+    }
+    .stepper button:hover { background: var(--sun); }
+    .stepper input {
+      width: 60px; height: 42px;
+      border: none;
+      border-left: 1.5px solid var(--ink);
+      border-right: 1.5px solid var(--ink);
+      text-align: center;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 16px;
+      background: var(--cream);
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    /* riepilogo prezzo */
+    .price-card {
+      background: var(--ink);
+      color: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-lg);
+      padding: 28px;
+      box-shadow: 6px 6px 0 var(--hot);
+      position: sticky;
+      top: 88px;
+    }
+    .price-card h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      margin-bottom: 18px;
+    }
+    .price-line {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px dashed rgba(255,254,245,.25);
+      font-family: var(--font-ui);
+      font-size: 14px;
+    }
+    .price-line .lab { opacity: .85; }
+    .price-line .val { font-weight: 700; }
+    .price-total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding-top: 18px;
+      margin-top: 8px;
+      border-top: 2px solid var(--cream);
+    }
+    .price-total .lab {
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
+    }
+    .price-total .val {
+      font-family: var(--font-display);
+      font-size: 36px; font-weight: 700;
+      color: var(--sun);
+    }
+    .price-card .info-line {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      letter-spacing: .08em;
+      opacity: .7;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
+    /* steps banner */
+    .steps {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .step {
+      flex: 1; min-width: 180px;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      padding: 18px;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+    .step .num {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      background: var(--hot);
+      color: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .step strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .step p { font-size: 14px; color: var(--ink-dim); }
+
+    .submit-row {
+      display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+      margin-top: 12px;
+    }
+    .form-msg {
+      display: none;
+      padding: 18px;
+      border-radius: var(--r-md);
+      margin-top: 18px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+    }
+    .form-msg.success { display: block; background: var(--grass-1); border: 2px solid var(--grass-3); }
+    .form-msg.error   { display: block; background: #ffe0d6; border: 2px solid var(--hot); color: var(--hot); }
+
+    /* divisore */
+    .divider { height: 2px; background: rgba(15,42,26,.12); margin: 28px 0; border: none; }
+
+    /* consensi finali (regolamento + privacy) */
+    .consent-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      line-height: 1.45;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: var(--r-sm);
+      transition: background .12s ease;
+    }
+    .consent-row + .consent-row { margin-top: 4px; }
+    .consent-row:hover { background: rgba(15,42,26,.04); }
+    .consent-row span { user-select: none; }
+    .consent-row a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+    .consent-row a:hover { color: var(--hot); }
+    .consent-check {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border: 2px solid var(--ink);
+      background: var(--cream);
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0;
+      position: relative;
+      transition: background .12s ease, box-shadow .12s ease;
+    }
+    .consent-check:hover { box-shadow: 2px 2px 0 var(--ink); }
+    .consent-check:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--sun);
+    }
+    .consent-check:checked {
+      background: var(--hot);
+      border-color: var(--ink);
+    }
+    .consent-check:checked::after {
+      content: "✓";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cream);
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 1;
+    }
+  </style>
+  <template id="__bundler_thumbnail" data-bg-color="#ff6b3d">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#ff6b3d"/>
+      <text x="600" y="430" font-family="Space Grotesk, sans-serif" font-size="120" font-weight="800" text-anchor="middle" fill="#fffef5">Iscrizione</text>
+      <rect x="500" y="500" width="200" height="80" rx="10" fill="#ffd36b" stroke="#0f2a1a" stroke-width="6"/>
+    </svg>
+  </template>
+</head>
+<body>
+  <div data-slot="topbar"></div>
+
+  <section class="page-hero">
+    <div class="wrap" style="position:relative;z-index:2;">
+      <div class="sec-eyebrow">iscrizione · 10–11 luglio 2026</div>
+      <h1 class="h-1" style="max-width:18ch;font-size:clamp(48px,7vw,96px);">
+        Tieniti il posto <em class="hand" style="font-style:normal;color:var(--ink);">nel prato</em>.
+      </h1>
+      <p style="max-width:54ch;margin-top:18px;font-size:18px;">
+        Compila, paga, arrivi. Niente bagarini, niente liste segrete. 5 € di biglietto minimo, e dentro c'è il braccialetto.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="num">1</span>
+          <strong>Iscrivi</strong>
+          <p>Compila il modulo qui sotto. Impieghi 2 minuti ma ci aiuti a programmare le attività.</p>
+        </div>
+        <div class="step">
+          <span class="num">2</span>
+          <strong>Conferma</strong>
+          <p>Riceverai conferma via email. Nella email trovi il link per modifiche future alla prenotazione</p>
+        </div>
+        <div class="step">
+          <span class="num">3</span>
+          <strong>Arrivi</strong>
+          <p>All'ingresso paghi e ti verrà consegnato il braccialetto da mettere al polso.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:40px;">
+    <div class="wrap">
+      <div class="reg-grid">
+        <!-- FORM -->
+        <form class="form-card" id="reg-form" novalidate>
+
+          <!-- honeypot anti-bot: campo invisibile, gli umani non lo compilano -->
+          <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+            <label for="hp">Lascia vuoto questo campo</label>
+            <input type="text" id="hp" name="_hp" tabindex="-1" autocomplete="off">
+          </div>
+          <h2 class="h-2" style="margin-bottom:24px;">I tuoi dati</h2>
+
+          <div class="form-row">
+            <label class="lbl" for="name">Nome o nick<span class="req">*</span></label>
+            <input type="text" id="name" name="name" required placeholder="Come ti chiami / vuoi essere chiamatə">
+          </div>
+
+          <div class="form-row">
+            <label class="lbl" for="email">Email<span class="req">*</span></label>
+            <input type="email" id="email" name="email" required placeholder="ti@scriviamo.qua">
+            <div class="hint">Solo per mandarti la conferma. Non finisce in nessuna mailing list.</div>
+          </div>
+
+          <div class="form-row">
+            <label class="lbl" for="phone">Telefono</label>
+            <input type="tel" id="phone" name="phone" placeholder="opzionale, per contattarti se serve" maxlength="40">
+          </div>
+
+          <div class="form-row">
+            <label class="lbl" for="age">Età indicativa</label>
+            <select id="age" name="age">
+              <option value="adult">adulto</option>
+              <option value="minor">minorenne accompagnato</option>
+            </select>
+          </div>
+
+          <hr class="divider">
+
+          <h2 class="h-2" style="margin-bottom:14px;">Dove dormi?</h2>
+          <p class="dim" style="margin-bottom:18px;">Scegli un'opzione. Puoi anche cambiare idea: scrivici.</p>
+
+          <div class="form-row">
+            <div class="radio-cards" id="sleep-options">
+              <!-- popolato da JS dai dati edizione -->
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <h2 class="h-2" style="margin-bottom:14px;">Pasti</h2>
+          <p class="dim" style="margin-bottom:18px;">Spunta i pasti a cui pensi di esserci: ci servono i numeri per la cucina. Non è vincolante: potrai modificare le scelte anche dopo, dal link che riceverai via email.</p>
+
+          <div class="form-row">
+            <div class="meal-grid" id="meal-slots">
+              <!-- popolato da JS dai dati edizione -->
+            </div>
+            <div class="hint">Eventuali prezzi sono indicativi e si saldano sul posto.</div>
+          </div>
+
+          <hr class="divider">
+
+          <h2 class="h-2" style="margin-bottom:14px;">A cosa sei interessatə</h2>
+          <p class="dim" style="margin-bottom:18px;">Aiuta a costruire il palinsesto. Non vincolante.</p>
+
+          <div class="form-row">
+            <div class="checks">
+              <label><input type="checkbox" name="interests" value="talk"> ascoltare talk</label>
+              <label><input type="checkbox" name="interests" value="workshop"> fare workshop</label>
+              <label><input type="checkbox" name="interests" value="lightning"> lightning talk mio</label>
+              <label><input type="checkbox" name="interests" value="kids"> attività con bambini</label>
+              <label><input type="checkbox" name="interests" value="music"> musica / DJ set</label>
+              <label><input type="checkbox" name="interests" value="volunteer"> dare una mano</label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="lbl" for="diet">Allergie / regime alimentare</label>
+            <input type="text" id="diet" name="diet" placeholder="vegano, glutine, lattosio, …">
+          </div>
+
+          <div class="form-row">
+            <label class="lbl" for="notes">Note libere</label>
+            <textarea id="notes" name="notes" placeholder="Arrivo in bici, porto un cane, posso aiutare al banco bevande, ecc."></textarea>
+          </div>
+
+          <div class="form-row">
+            <label class="consent-row" for="agree">
+              <input type="checkbox" id="agree" class="consent-check" required>
+              <span>Ho letto il <a href="regolamento.html" target="_blank" rel="noopener">regolamento</a> e accetto le condizioni.<span class="req">*</span></span>
+            </label>
+            <label class="consent-row" for="privacy">
+              <input type="checkbox" id="privacy" class="consent-check" required>
+              <span>Ho letto l'<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati personali per la gestione dell'iscrizione.<span class="req">*</span></span>
+            </label>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="btn accent">Iscrivimi <span class="arr">→</span></button>
+            <span class="dim mono" style="font-size:12px;">riceverai email di conferma con istruzioni di pagamento</span>
+          </div>
+
+          <div class="form-msg" id="form-msg"></div>
+        </form>
+
+        <!-- RIEPILOGO -->
+        <div>
+          <div class="price-card">
+            <div class="mono" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-bottom:10px;">riepilogo</div>
+            <h3>Il tuo conto</h3>
+
+            <div class="price-line">
+              <span class="lab">Biglietto minimo</span>
+              <span class="val" id="riepilogo-ticket">5 €</span>
+            </div>
+            <div class="price-line">
+              <span class="lab">Pernottamento</span>
+              <span class="val" id="riepilogo-sleep">— scegli —</span>
+            </div>
+            <div class="price-line">
+              <span class="lab">Pasti prenotati</span>
+              <span class="val" id="riepilogo-meals">0</span>
+            </div>
+
+            <div class="price-total">
+              <span class="lab">Totale</span>
+              <span class="val" id="riepilogo-total">5 €</span>
+            </div>
+
+            <p class="info-line">
+              Eventuali pasti a pagamento si saldano sul posto.
+            </p>
+          </div>
+
+          <p class="hand" style="font-size:30px;color:var(--hot);margin-top:24px;text-align:center;line-height:1;">
+            ci si vede<br>nel prato!
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div data-slot="footer"></div>
+
+  <script src="api/edition.js.php"></script>
+  <script src="scripts/partials.js"></script>
+  <script src="scripts/runtime.js"></script>
+  <script src="scripts/iscrizione.js"></script>
+</body>
+</html>
