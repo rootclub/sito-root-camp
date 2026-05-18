@@ -11,6 +11,7 @@ const ADMIN_NAV = [
     'dashboard'   => ['Dashboard',    '/admin/index.php',      null],
     'schedule'    => ['Palinsesto',   '/admin/schedule.php',   null],
     'organizers'  => ['Organizzano',  '/admin/organizers.php', null],
+    'sponsors'    => ['Sponsor',      '/admin/sponsors.php',   null],
     'rules'       => ['Regolamento',  '/admin/rules.php',      null],
     'food'        => ['Cibo & bere',  '/admin/food.php',       null],
     'meals'       => ['Pasti',        '/admin/meals.php',      null],

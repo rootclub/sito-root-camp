@@ -107,11 +107,22 @@ function build_edition_payload(int $edId): ?array
     }
 
     // Organizers
-    $stmt = db()->prepare('SELECT name, role, is_placeholder FROM organizers WHERE edition_id = ? ORDER BY sort, id');
+    $stmt = db()->prepare('SELECT name, role, is_placeholder, link_url FROM organizers WHERE edition_id = ? ORDER BY sort, id');
     $stmt->execute([$edId]);
     $organizers = array_map(function ($o) {
         $out = ['name' => (string)$o['name'], 'role' => (string)($o['role'] ?? '')];
         if (!empty($o['is_placeholder'])) $out['placeholder'] = true;
+        if (!empty($o['link_url'])) $out['link'] = (string)$o['link_url'];
+        return $out;
+    }, $stmt->fetchAll());
+
+    // Sponsors
+    $stmt = db()->prepare('SELECT name, logo_url, link_url FROM sponsors WHERE edition_id = ? ORDER BY sort, id');
+    $stmt->execute([$edId]);
+    $sponsors = array_map(function ($s) {
+        $out = ['name' => (string)$s['name']];
+        if (!empty($s['logo_url'])) $out['logo'] = (string)$s['logo_url'];
+        if (!empty($s['link_url'])) $out['link'] = (string)$s['link_url'];
         return $out;
     }, $stmt->fetchAll());
 
@@ -204,6 +215,7 @@ function build_edition_payload(int $edId): ?array
         ],
         'marqueeWords' => $marqueeWords,
         'organizers' => $organizers,
+        'sponsors'   => $sponsors,
         'rules'      => $rules,
         'food' => [
             'intro' => (string)($ed['food_intro'] ?? ''),

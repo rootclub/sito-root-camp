@@ -52,16 +52,21 @@ window.TAB_PARTIALS = {
             <div>
               <h4 style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;opacity:.7;">Scrivici</h4>
               <div style="display:grid;gap:8px;">
-                <a href="mailto:${e.contacts.email}">${e.contacts.email}</a>
-                <a href="#">matrix · ${e.contacts.matrix}</a>
-                <a href="#">telegram · ${e.contacts.telegram}</a>
-                <a href="#">mastodon · ${e.contacts.mastodon}</a>
+                ${e.contacts.email    ? `<a href="mailto:${e.contacts.email}">${e.contacts.email}</a>` : ''}
+                ${e.contacts.matrix   ? `<a href="#">matrix · ${e.contacts.matrix}</a>` : ''}
+                ${e.contacts.telegram ? `<a href="#">telegram · ${e.contacts.telegram}</a>` : ''}
+                ${e.contacts.mastodon ? `<a href="#">mastodon · ${e.contacts.mastodon}</a>` : ''}
               </div>
             </div>
             <div>
               <h4 style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;opacity:.7;">Organizzano</h4>
               <div style="display:grid;gap:10px;opacity:.9;">
-                ${e.organizers.map(o => `<span style="display:block;"><span style="opacity:.7;font-size:12px;">${o.role}</span><br><strong>${o.name}</strong></span>`).join("")}
+                ${e.organizers.map(o => {
+                  const name = o.link
+                    ? `<a href="${o.link}" target="_blank" rel="noopener" style="color:inherit;">${o.name}</a>`
+                    : o.name;
+                  return `<span style="display:block;"><span style="opacity:.7;font-size:12px;">${o.role}</span><br><strong>${name}</strong></span>`;
+                }).join("")}
               </div>
             </div>
           </div>

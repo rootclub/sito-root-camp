@@ -2,6 +2,10 @@
 (function () {
   window.TAB_mountPartials('home');
 
+  // Etichetta prezzo biglietto dal DB (meta.php → tickets.price)
+  const ticketPrice = (window.TAB_CURRENT_EDITION && window.TAB_CURRENT_EDITION.tickets && window.TAB_CURRENT_EDITION.tickets.price) || '';
+  document.querySelectorAll('[data-ticket-price]').forEach(el => { el.textContent = ticketPrice; });
+
   // ============================================================
   // Banner cookie parodia — bottom slide-in, una volta per browser.
   // ============================================================
@@ -150,15 +154,50 @@
     return ({ talk:'grass', workshop:'sun', music:'berry', kids:'sky', opening:'hot' })[k] || '';
   }
 
+  // Sponsor tecnici — sezione nascosta se vuota
+  const spEl = document.getElementById('sponsors-grid');
+  if (spEl) {
+    const sponsors = (window.TAB_CURRENT_EDITION && Array.isArray(window.TAB_CURRENT_EDITION.sponsors))
+      ? window.TAB_CURRENT_EDITION.sponsors
+      : [];
+    if (sponsors.length === 0) {
+      const sec = document.getElementById('sponsors');
+      if (sec) sec.hidden = true;
+    } else {
+      const sec = document.getElementById('sponsors');
+      if (sec) sec.hidden = false;
+      spEl.innerHTML = sponsors.map(s => {
+        const cls = 'tile hov';
+        const baseStyle = 'min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;';
+        const inner = `
+          ${s.logo
+            ? `<img src="${s.logo}" alt="${s.name}" style="max-width:100%;max-height:90px;object-fit:contain;">`
+            : ''}
+          <div style="font-family:var(--font-display);font-size:18px;line-height:1.15;font-weight:700;">${s.name}</div>
+        `;
+        if (s.link) {
+          return `<a class="${cls}" style="${baseStyle}text-decoration:none;color:inherit;" href="${s.link}" target="_blank" rel="noopener">${inner}</a>`;
+        }
+        return `<div class="${cls}" style="${baseStyle}">${inner}</div>`;
+      }).join('');
+    }
+  }
+
   // Orgs
   const orgsEl = document.getElementById('orgs-grid');
   if (orgsEl) {
     const bgs = ['sun', 'sky', 'grass', ''];
-    orgsEl.innerHTML = window.TAB_CURRENT_EDITION.organizers.map((o, i) => `
-      <div class="tile hov ${bgs[i % bgs.length]}" style="min-height:180px;display:flex;flex-direction:column;justify-content:space-between;${o.placeholder ? 'border-style:dashed;opacity:.7;' : ''}">
+    orgsEl.innerHTML = window.TAB_CURRENT_EDITION.organizers.map((o, i) => {
+      const cls = `tile hov ${bgs[i % bgs.length]}`;
+      const baseStyle = `min-height:180px;display:flex;flex-direction:column;justify-content:space-between;${o.placeholder ? 'border-style:dashed;opacity:.7;' : ''}`;
+      const inner = `
         <div class="mono" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.75;">${o.role}</div>
         <div style="font-family:var(--font-display);font-size:22px;line-height:1.1;font-weight:700;">${o.name}</div>
-      </div>
-    `).join('');
+      `;
+      if (o.link) {
+        return `<a class="${cls}" style="${baseStyle}text-decoration:none;color:inherit;" href="${o.link}" target="_blank" rel="noopener">${inner}</a>`;
+      }
+      return `<div class="${cls}" style="${baseStyle}">${inner}</div>`;
+    }).join('');
   }
 })();

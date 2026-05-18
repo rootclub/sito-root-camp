@@ -72,6 +72,14 @@ function clone_edition(int $sourceId, array $newData): int
             $insOrg->execute([$newId, $o['name'], $o['role'], (int)$o['is_placeholder'], $o['link_url'], (int)$o['sort']]);
         }
 
+        // sponsors
+        $sp = $pdo->prepare('SELECT name, logo_url, link_url, sort FROM sponsors WHERE edition_id = ? ORDER BY sort, id');
+        $sp->execute([$sourceId]);
+        $insSp = $pdo->prepare('INSERT INTO sponsors (edition_id, name, logo_url, link_url, sort) VALUES (?, ?, ?, ?, ?)');
+        foreach ($sp->fetchAll() as $s) {
+            $insSp->execute([$newId, $s['name'], $s['logo_url'], $s['link_url'], (int)$s['sort']]);
+        }
+
         // rules
         $rl = $pdo->prepare('SELECT icon, title, body, sort FROM rules WHERE edition_id = ? ORDER BY sort, id');
         $rl->execute([$sourceId]);
@@ -346,7 +354,7 @@ admin_layout_open('Edizioni', 'editions');
   <article class="card">
     <header class="card-head">
       <h2>Clona da edizione esistente</h2>
-      <span class="muted small">copia tracks, organizers, rules, food, pasti, sleep · NON copia iscrizioni e palinsesto</span>
+      <span class="muted small">copia tracks, organizers, sponsor, rules, food, pasti, sleep · NON copia iscrizioni e palinsesto</span>
     </header>
     <?php if (empty($rows)): ?>
       <p class="muted">Nessuna edizione da cui clonare.</p>

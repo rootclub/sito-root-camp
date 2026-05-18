@@ -97,6 +97,18 @@
 
   render();
 
+  // CFP — link "Manda proposta": usa contact_email dell'edizione attiva.
+  // Se non valorizzato in admin, il bottone resta nascosto.
+  const cfpLink = document.getElementById('cfp-link');
+  if (cfpLink) {
+    const email = (ed.contacts && ed.contacts.email) ? String(ed.contacts.email).trim() : '';
+    if (email) {
+      const subject = encodeURIComponent(`CFP /RooT-Camp ${ed.year}`);
+      cfpLink.href = `mailto:${email}?subject=${subject}`;
+      cfpLink.hidden = false;
+    }
+  }
+
   // Toggle: tutta la riga è cliccabile, ma i link nella descrizione (e selezione testo)
   // non devono chiudere lo slot.
   function toggleSlot(slot) {

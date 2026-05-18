@@ -6,6 +6,7 @@ require_once __DIR__ . '/db.php';
 // Whitelist di tabelle gestite da queste utility (anti SQL-injection sul nome).
 const CRUD_TABLES = [
     'organizers',
+    'sponsors',
     'rules',
     'food_items',
     'sleep_options',

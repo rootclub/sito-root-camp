@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS meal_slots;
 DROP TABLE IF EXISTS sleep_options;
 DROP TABLE IF EXISTS food_items;
 DROP TABLE IF EXISTS rules;
+DROP TABLE IF EXISTS sponsors;
 DROP TABLE IF EXISTS organizers;
 DROP TABLE IF EXISTS schedule_day_settings;
 DROP TABLE IF EXISTS schedule_items;
@@ -151,6 +152,21 @@ CREATE TABLE organizers (
   PRIMARY KEY (id),
   KEY idx_edition (edition_id, sort),
   CONSTRAINT fk_orgs_edition FOREIGN KEY (edition_id) REFERENCES editions(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- sponsors (sponsor tecnici di edizione)
+-- ============================================================
+CREATE TABLE sponsors (
+  id         INT UNSIGNED      NOT NULL AUTO_INCREMENT,
+  edition_id INT UNSIGNED      NOT NULL,
+  name       VARCHAR(160)      NOT NULL,
+  logo_url   VARCHAR(255)      DEFAULT NULL,
+  link_url   VARCHAR(255)      DEFAULT NULL,
+  sort       SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  KEY idx_edition (edition_id, sort),
+  CONSTRAINT fk_sponsors_edition FOREIGN KEY (edition_id) REFERENCES editions(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
