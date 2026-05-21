@@ -28,10 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'toggle_checkin': {
             $id = post_int('id');
+            // MariaDB valuta i SET left-to-right: al momento del CASE checked_in è già
+            // il NUOVO valore. Quindi: nuovo=1 ⇒ NOW(), nuovo=0 ⇒ NULL.
             $stmt = db()->prepare(
                 'UPDATE iscrizioni
                     SET checked_in = 1 - checked_in,
-                        checked_in_at = CASE WHEN checked_in = 0 THEN NOW() ELSE NULL END
+                        checked_in_at = CASE WHEN checked_in = 1 THEN NOW() ELSE NULL END
                   WHERE id = ? AND edition_id = ?'
             );
             $stmt->execute([$id, $edId]);
@@ -392,7 +394,13 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
 
         <?php if ($detail['checked_in']): ?>
           <dt>Check-in</dt>
-          <dd class="small mono"><?= e(date('d/m/Y H:i', strtotime((string)$detail['checked_in_at']))) ?></dd>
+          <dd class="small mono">
+            <?php if (!empty($detail['checked_in_at'])): ?>
+              <?= e(date('d/m/Y H:i', strtotime((string)$detail['checked_in_at']))) ?>
+            <?php else: ?>
+              <span class="muted">orario non registrato</span>
+            <?php endif; ?>
+          </dd>
         <?php endif; ?>
 
         <?php if (!empty($detail['ip'])): ?>
@@ -506,7 +514,9 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
             <td>
               <?php if ($r['checked_in']): ?>
                 <span class="pill pill-ok">✓</span>
-                <span class="muted small mono"><?= e(date('d/m H:i', strtotime((string)$r['checked_in_at']))) ?></span>
+                <?php if (!empty($r['checked_in_at'])): ?>
+                  <span class="muted small mono"><?= e(date('d/m H:i', strtotime((string)$r['checked_in_at']))) ?></span>
+                <?php endif; ?>
               <?php else: ?>
                 <span class="muted">—</span>
               <?php endif; ?>
