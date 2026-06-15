@@ -54,7 +54,7 @@ window.TAB_PARTIALS = {
               <div style="display:grid;gap:8px;">
                 ${e.contacts.email    ? `<a href="mailto:${e.contacts.email}">${e.contacts.email}</a>` : ''}
                 ${e.contacts.matrix   ? `<a href="#">matrix · ${e.contacts.matrix}</a>` : ''}
-                ${e.contacts.telegram ? `<a href="#">telegram · ${e.contacts.telegram}</a>` : ''}
+                ${e.contacts.telegram ? `<a href="${/^https?:\/\//.test(e.contacts.telegram) ? e.contacts.telegram : `https://t.me/${e.contacts.telegram.replace(/^@/, '')}`}" target="_blank" rel="noopener">telegram · ${e.contacts.telegram}</a>` : ''}
                 ${e.contacts.mastodon ? `<a href="#">mastodon · ${e.contacts.mastodon}</a>` : ''}
               </div>
             </div>

@@ -18,6 +18,45 @@ $ed = edition_active();
 if (!$ed) { flash_set('error','Nessuna edizione disponibile.'); redirect('/admin/index.php'); }
 $edId = (int)$ed['id'];
 
+// =====================================================================
+// Export CSV: elenco prenotati di un singolo pasto, con dieta/allergie
+// (output prima di qualunque HTML)
+// =====================================================================
+if (get_str('format') === 'csv') {
+    $mealId = get_int('meal', 0);
+    $meal = $mealId > 0 ? crud_get('meal_slots', $mealId, $edId) : null;
+    if (!$meal) { flash_set('error','Pasto non trovato.'); redirect('/admin/meals.php'); }
+
+    $stmt = db()->prepare(
+        'SELECT i.name, i.email, i.phone, i.diet, i.notes, i.sleep_kind, i.checked_in
+           FROM iscrizione_meals im
+           JOIN iscrizioni i ON i.id = im.iscrizione_id
+          WHERE im.meal_slot_id = ? AND i.edition_id = ?
+          ORDER BY i.name'
+    );
+    $stmt->execute([$mealId, $edId]);
+
+    $filename = sprintf('pasto-%s-%d-%s.csv', $meal['code'], (int)$ed['year'], date('Ymd-His'));
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: no-store');
+
+    $out = fopen('php://output', 'w');
+    fwrite($out, "\xEF\xBB\xBF"); // BOM UTF-8 per Excel
+    fputcsv($out, ['nome','email','telefono','dieta_allergie','note','pernottamento','check_in']);
+    while ($r = $stmt->fetch()) {
+        fputcsv($out, [
+            $r['name'], $r['email'], $r['phone'],
+            $r['diet'], $r['notes'], $r['sleep_kind'],
+            $r['checked_in'] ? 'sì' : 'no',
+        ]);
+    }
+    fclose($out);
+    audit_log('export_csv', ['entity'=>'meal_slots','entity_id'=>$mealId,'edition_id'=>$edId,
+                             'payload'=>['code'=>$meal['code']]]);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $action = post_str('action');
@@ -218,6 +257,7 @@ admin_layout_open('Pasti', 'meals');
               <button type="submit" name="dir" value="up"   class="btn-icon" title="Su"  <?= $i === 0 ? 'disabled' : '' ?>>↑</button>
               <button type="submit" name="dir" value="down" class="btn-icon" title="Giù" <?= $i === count($rows) - 1 ? 'disabled' : '' ?>>↓</button>
             </form>
+            <a href="?meal=<?= (int)$r['id'] ?>&amp;format=csv" class="btn-icon" title="Scarica elenco prenotati (CSV)">⤓</a>
             <a href="?edit=<?= (int)$r['id'] ?>" class="btn-icon" title="Modifica">✎</a>
             <form method="post" class="inline" onsubmit="return confirm('Eliminare «<?= e(addslashes($r['label'])) ?>»?\n\nLe prenotazioni esistenti verranno rimosse.');">
               <?= csrf_field() ?>

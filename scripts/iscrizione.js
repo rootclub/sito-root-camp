@@ -10,7 +10,8 @@
     return;
   }
 
-  const TICKET_EUR = (ed.tickets && ed.tickets.priceEur) || 15;
+  const TICKET_EUR = (ed.tickets && Number.isFinite(ed.tickets.priceEur)) ? ed.tickets.priceEur : 15;
+  const TICKET_LABEL = (ed.tickets && ed.tickets.price) || (TICKET_EUR + ' €');
 
   // --------- Render sleep options ---------
   const sleepMount = document.getElementById('sleep-options');
@@ -18,7 +19,7 @@
   if (sleepMount) {
     sleepMount.innerHTML = sleepOpts.map((o, i) => {
       const price = o.price_eur || 0;
-      const label = price === 0 ? 'incluso' : ('+' + price + ' €');
+      const label = price === 0 ? '—' : ('+' + price + ' €');
       const cls = price === 0 ? ' free' : '';
       return `
         <label>
@@ -82,12 +83,14 @@
 
     const sleepObj = sleepOpts.find(o => o.kind === sleepKind);
     const sleepLine = sleepObj
-      ? `${sleepObj.title} · ${sleepCost === 0 ? 'incluso' : sleepCost + ' €'}`
+      ? `${sleepObj.title} · ${sleepCost === 0 ? '—' : sleepCost + ' €'}`
       : '—';
 
+    const elTicket = document.getElementById('riepilogo-ticket');
     const elSleep = document.getElementById('riepilogo-sleep');
     const elMeals = document.getElementById('riepilogo-meals');
     const elTotal = document.getElementById('riepilogo-total');
+    if (elTicket) elTicket.textContent = TICKET_LABEL;
     if (elSleep) elSleep.textContent = sleepLine;
     if (elMeals) elMeals.textContent = String(nMeals);
     if (elTotal) elTotal.textContent = total + ' €';
