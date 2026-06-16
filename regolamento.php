@@ -216,6 +216,7 @@
       <ellipse cx="600" cy="560" rx="200" ry="40" fill="none" stroke="#fffef5" stroke-width="6"/>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>
@@ -312,7 +313,7 @@
         <p style="opacity:.92;max-width:48ch;margin:0 auto 28px;">
           Iscrivendoti accetti queste regole. Lo staff può chiedere di andarsene a chiunque le ignori — niente rimborso, niente discussione.
         </p>
-        <a href="iscrizione.html" class="btn ghost" style="font-size:18px;">Ho capito, mi iscrivo →</a>
+        <a href="iscrizione.php" class="btn ghost" style="font-size:18px;">Ho capito, mi iscrivo →</a>
       </div>
 
     </div>

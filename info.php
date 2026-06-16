@@ -346,6 +346,7 @@
       <rect x="780" y="460" width="180" height="100" rx="10" fill="#ffd36b" stroke="#0f2a1a" stroke-width="6"/>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>
@@ -555,7 +556,7 @@
       <div class="contact-grid" id="contact-grid"></div>
 
       <div style="margin-top:36px;display:flex;flex-wrap:wrap;gap:16px;">
-        <a href="iscrizione.html" class="btn accent">Vai all'iscrizione →</a>
+        <a href="iscrizione.php" class="btn accent">Vai all'iscrizione →</a>
         <a href="mailto:cfp@tab-camp.it?subject=CFP%20RooT-Camp%202026" class="btn ghost">Proponi un talk →</a>
       </div>
     </div>

@@ -79,6 +79,7 @@
       <text x="600" y="430" font-family="Space Grotesk, sans-serif" font-size="120" font-weight="800" text-anchor="middle" fill="#0f2a1a">Archivio</text>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>

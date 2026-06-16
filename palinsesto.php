@@ -252,6 +252,7 @@
       <rect x="700" y="500" width="120" height="40" rx="6" fill="#e8488a" stroke="#0f2a1a" stroke-width="4"/>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>
@@ -308,7 +309,7 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;">
           <a id="cfp-link" href="#" class="btn" hidden>Manda proposta →</a>
-          <a href="iscrizione.html" class="mono" style="color:var(--cream);font-size:13px;opacity:.85;">o iscriviti come partecipante →</a>
+          <a href="iscrizione.php" class="mono" style="color:var(--cream);font-size:13px;opacity:.85;">o iscriviti come partecipante →</a>
         </div>
       </div>
 

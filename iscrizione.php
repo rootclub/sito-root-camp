@@ -418,6 +418,7 @@
       <rect x="500" y="500" width="200" height="80" rx="10" fill="#ffd36b" stroke="#0f2a1a" stroke-width="6"/>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>
@@ -541,11 +542,11 @@
           <div class="form-row">
             <label class="consent-row" for="agree">
               <input type="checkbox" id="agree" class="consent-check" required>
-              <span>Ho letto il <a href="regolamento.html" target="_blank" rel="noopener">regolamento</a> e accetto le condizioni.<span class="req">*</span></span>
+              <span>Ho letto il <a href="regolamento.php" target="_blank" rel="noopener">regolamento</a> e accetto le condizioni.<span class="req">*</span></span>
             </label>
             <label class="consent-row" for="privacy">
               <input type="checkbox" id="privacy" class="consent-check" required>
-              <span>Ho letto l'<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati personali per la gestione dell'iscrizione.<span class="req">*</span></span>
+              <span>Ho letto l'<a href="privacy.php" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati personali per la gestione dell'iscrizione.<span class="req">*</span></span>
             </label>
           </div>
 

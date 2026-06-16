@@ -19,6 +19,7 @@
       <polygon points="900,720 980,580 1060,720" fill="#5fb0dc" stroke="#0f2a1a" stroke-width="6"/>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>
@@ -42,9 +43,9 @@
     <!-- floater keycaps sparse -->
     <a href="#palinsesto" class="floater f-talk" aria-label="Vai al palinsesto">talk</a>
     <a href="#palinsesto" class="floater f-workshop" aria-label="Vai al palinsesto">workshop</a>
-    <a href="info.html#mangiare" class="floater f-birra" aria-label="Info su mangiare e bere">birra</a>
-    <a href="info.html#mangiare" class="floater f-cucina" aria-label="Info su mangiare e bere">cucina</a>
-    <a href="info.html#dormire" class="floater f-campeggio" aria-label="Info sul campeggio">campeggio</a>
+    <a href="info.php#mangiare" class="floater f-birra" aria-label="Info su mangiare e bere">birra</a>
+    <a href="info.php#mangiare" class="floater f-cucina" aria-label="Info su mangiare e bere">cucina</a>
+    <a href="info.php#dormire" class="floater f-campeggio" aria-label="Info sul campeggio">campeggio</a>
 
     <div class="wrap hero-content" style="padding-top:24px;">
       <h1 class="hero-title hero-title-img hero-title-split" aria-label="/RooT-Camp">
@@ -82,8 +83,8 @@
       </div>
 
       <div class="btn-row" style="margin-top:40px;gap:35px;">
-        <a href="iscrizione.html" class="btn accent">Mi iscrivo <span class="arr">→</span></a>
-        <a href="palinsesto.html" class="btn ghost">Vedi il palinsesto</a>
+        <a href="iscrizione.php" class="btn accent">Mi iscrivo <span class="arr">→</span></a>
+        <a href="palinsesto.php" class="btn ghost">Vedi il palinsesto</a>
       </div>
     </div>
 
@@ -154,7 +155,7 @@
             Talk, workshop, cose <em class="hand" style="color:var(--hot);font-style:normal;font-size:.95em;">nel prato</em>.
           </h2>
         </div>
-        <a href="palinsesto.html" class="btn ghost">Apri il palinsesto completo →</a>
+        <a href="palinsesto.php" class="btn ghost">Apri il palinsesto completo →</a>
       </div>
 
       <div id="schedule-preview" class="schedule-preview"></div>
@@ -173,7 +174,7 @@
       </h2>
 
       <div class="grid-3">
-        <a href="info.html#mangiare" class="tile hov" style="text-decoration:none;color:inherit;display:block;">
+        <a href="info.php#mangiare" class="tile hov" style="text-decoration:none;color:inherit;display:block;">
           <div class="eatdrink-ill" style="margin-bottom:18px;">
             <svg viewBox="0 0 80 60" width="80" height="60" style="display:block;">
               <!-- boccale -->
@@ -188,7 +189,7 @@
           <p class="dim">Si mangia bene. Si beve meglio.</p>
           <div class="mono" style="margin-top:18px;font-size:12px;color:var(--hot);font-weight:700;">apri →</div>
         </a>
-        <a href="info.html#dormire" class="tile hov" style="text-decoration:none;color:inherit;display:block;">
+        <a href="info.php#dormire" class="tile hov" style="text-decoration:none;color:inherit;display:block;">
           <div style="margin-bottom:18px;">
             <svg viewBox="0 0 80 60" width="80" height="60" style="display:block;">
               <!-- tenda -->
@@ -201,7 +202,7 @@
           <p class="dim">Il prato è grande. La tua tenda è benvenuta.</p>
           <div class="mono" style="margin-top:18px;font-size:12px;color:var(--hot);font-weight:700;">apri →</div>
         </a>
-        <a href="regolamento.html" class="tile hov" style="text-decoration:none;color:inherit;display:block;">
+        <a href="regolamento.php" class="tile hov" style="text-decoration:none;color:inherit;display:block;">
           <div style="margin-bottom:18px;">
             <svg viewBox="0 0 80 60" width="80" height="60" style="display:block;">
               <!-- braccialetto -->
@@ -260,7 +261,7 @@
       <p style="font-size:clamp(18px, 1.8vw, 22px);max-width:50ch;margin:0 auto 36px;opacity:.95;">
         Ingresso <span data-ticket-price></span>. Dentro c'è il braccialetto di riconoscimento. Le tessere a foratura si comprano sul posto.
       </p>
-      <a href="iscrizione.html" class="btn ghost" style="font-size:20px;padding:18px 32px;">Mi iscrivo <span class="arr">→</span></a>
+      <a href="iscrizione.php" class="btn ghost" style="font-size:20px;padding:18px 32px;">Mi iscrivo <span class="arr">→</span></a>
     </div>
   </section>
 

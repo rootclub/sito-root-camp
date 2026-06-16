@@ -27,8 +27,8 @@
           </div>
           ${isUpcoming ? `
             <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
-              <a href="iscrizione.html" class="btn ghost" style="font-size:14px;padding:10px 18px;">Iscriviti →</a>
-              <a href="palinsesto.html" class="btn ghost" style="font-size:14px;padding:10px 18px;">Palinsesto →</a>
+              <a href="iscrizione.php" class="btn ghost" style="font-size:14px;padding:10px 18px;">Iscriviti →</a>
+              <a href="palinsesto.php" class="btn ghost" style="font-size:14px;padding:10px 18px;">Palinsesto →</a>
             </div>
           ` : `
             <div style="margin-top:18px;">

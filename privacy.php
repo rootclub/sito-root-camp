@@ -99,6 +99,7 @@
       <text x="600" y="430" font-family="Space Grotesk, sans-serif" font-size="120" font-weight="800" text-anchor="middle" fill="#0f2a1a">Privacy</text>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>
@@ -148,7 +149,7 @@
         <h2>Categorie di dati personali oggetto di trattamento</h2>
         <p>
           In occasione della trasmissione del modulo di iscrizione, accessibile alla URL
-          <a href="iscrizione.html">/iscrizione</a>, formano oggetto di trattamento le seguenti
+          <a href="iscrizione.php">/iscrizione</a>, formano oggetto di trattamento le seguenti
           categorie di dati personali:
         </p>
         <ul>
