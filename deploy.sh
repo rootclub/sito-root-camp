@@ -14,6 +14,13 @@
 # File MAI deployati (vedi PROTECTED_FILES + esclusioni di --all):
 #   .env, .env.example, .deploy-config, deploy.sh, *.sql, *.sqlite, *.log,
 #   CLAUDE.md, *standalone* (snapshot esportati), scraps/, .git/
+#
+# Rename in upload: i file .htaccess sono versionati e sincronizzati come
+# _.htaccess (Nextcloud rifiuta i file che iniziano con un punto e blocca la
+# sync). Sul server però devono chiamarsi .htaccess per essere attivi, quindi
+# OGNI _.htaccess viene caricato come .htaccess (root, inc/, bin/, ...).
+# Puoi anche passare ".htaccess" come argomento: il sorgente locale usato è
+# l'_.htaccess corrispondente.
 
 set -euo pipefail
 
@@ -34,6 +41,20 @@ source "$CONFIG_FILE"
 
 # Rimuovi trailing slash da FTP_REMOTE_DIR, gestisci "/" come vuoto
 FTP_REMOTE_DIR="${FTP_REMOTE_DIR%/}"
+
+# Mappa il path locale (relativo al progetto) al path remoto.
+# Unica regola: _.htaccess -> .htaccess (in qualsiasi directory).
+remote_rel() {
+    local rel="$1" dir base
+    dir=$(dirname "$rel")
+    base=$(basename "$rel")
+    [[ "$base" == "_.htaccess" ]] && base=".htaccess"
+    if [[ "$dir" == "." ]]; then
+        printf '%s\n' "$base"
+    else
+        printf '%s/%s\n' "$dir" "$base"
+    fi
+}
 
 for var in FTP_HOST FTP_USER FTP_PASS; do
     if [[ -z "${!var:-}" ]]; then
@@ -80,6 +101,11 @@ if [[ "$1" == "--all" ]]; then
         -print0)
 else
     for f in "$@"; do
+        # Consenti di passare ".htaccess": il sorgente locale è "_.htaccess".
+        if [[ "$(basename "$f")" == ".htaccess" ]]; then
+            f="$(dirname "$f")/_.htaccess"
+            f="${f#./}"
+        fi
         basename=$(basename "$f")
         skip=false
         for p in "${PROTECTED_FILES[@]}"; do
@@ -111,12 +137,13 @@ echo "Caricamento di ${#FILES[@]} file su $FTP_HOST:$FTP_REMOTE_DIR ..."
 # Genera comandi FTP
 FTP_COMMANDS=""
 for filepath in "${FILES[@]}"; do
-    # Calcola path relativo al progetto
+    # Calcola path relativo al progetto (e quello remoto, con eventuale rename)
     rel="${filepath#$SCRIPT_DIR/}"
-    remote_dir="$FTP_REMOTE_DIR/$(dirname "$rel")"
+    rrel="$(remote_rel "$rel")"
+    remote_dir="$FTP_REMOTE_DIR/$(dirname "$rrel")"
     FTP_COMMANDS+="mkdir $remote_dir
 "
-    FTP_COMMANDS+="put $filepath $FTP_REMOTE_DIR/$rel
+    FTP_COMMANDS+="put $filepath $FTP_REMOTE_DIR/$rrel
 "
 done
 
@@ -129,7 +156,7 @@ curl --ftp-create-dirs -s -S \
 ERRORS=0
 for filepath in "${FILES[@]}"; do
     rel="${filepath#$SCRIPT_DIR/}"
-    remote_path="$FTP_REMOTE_DIR/$rel"
+    remote_path="$FTP_REMOTE_DIR/$(remote_rel "$rel")"
     echo -n "  $rel -> $remote_path ... "
     if curl -s -S --ssl-reqd -k --ftp-create-dirs \
         --user "$FTP_USER:$FTP_PASS" \
