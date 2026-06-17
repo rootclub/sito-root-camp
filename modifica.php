@@ -76,6 +76,14 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $diet  = isset($_POST['diet'])  && is_string($_POST['diet'])  ? trim($_POST['diet'])  : '';
     $notes = isset($_POST['notes']) && is_string($_POST['notes']) ? trim($_POST['notes']) : '';
 
+    // Consenso art. 9 (salute/dieta). Obbligatorio se il campo allergie/dieta è
+    // valorizzato, a meno che il valore non sia cambiato e il consenso risulti già
+    // agli atti (in tal caso non serve ri-spuntare ad ogni modifica).
+    $healthConsent = isset($_POST['health_consent']);
+    $hasDiet       = $diet !== '';
+    $dietUnchanged = ($diet === (string)($iscrizione['diet'] ?? ''));
+    $alreadyConsented = !empty($iscrizione['health_consent_at']) && $dietUnchanged;
+
     $mealsRaw = $_POST['meals'] ?? [];
     if (!is_array($mealsRaw)) $mealsRaw = [];
     $mealsPosted = array_values(array_unique(array_filter(
@@ -86,6 +94,9 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mb_strlen($phone) > 40)  $errors[] = 'Telefono troppo lungo.';
     if (mb_strlen($diet)  > 255) $errors[] = 'Dieta troppo lunga (max 255).';
     if (mb_strlen($notes) > 1000) $errors[] = 'Note troppo lunghe (max 1000).';
+    if ($hasDiet && !$healthConsent && !$alreadyConsented) {
+        $errors[] = 'Per indicare allergie/regime alimentare devi spuntare la casella di consenso, oppure svuota il campo.';
+    }
 
     // Verifica sleep_kind
     $availSleep = [];
@@ -117,21 +128,39 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $cardsEur  = (int)$iscrizione['cards_eur'];
         $totalEur  = $ticketEur + $sleepEur + $cardsEur;
 
+        // Stato del consenso art. 9 dopo questa modifica:
+        //  - campo svuotato        → dato cancellato, consenso azzerato
+        //  - dato nuovo/cambiato   → nuovo consenso (timestamp + testo canonico)
+        //  - dato invariato e già acconsentito → si mantiene quanto agli atti
+        if (!$hasDiet) {
+            $healthConsentAt   = null;
+            $healthConsentText = null;
+        } elseif ($alreadyConsented) {
+            $healthConsentAt   = (string)$iscrizione['health_consent_at'];
+            $healthConsentText = (string)($iscrizione['health_consent_text'] ?? HEALTH_CONSENT_TEXT);
+        } else {
+            $healthConsentAt   = date('Y-m-d H:i:s');
+            $healthConsentText = HEALTH_CONSENT_TEXT;
+        }
+
         try {
             db_tx(function (PDO $pdo) use (
                 $iscrizione, $phone, $sleepKind, $sleepEur, $totalEur,
-                $diet, $notes, $newMealIds
+                $diet, $notes, $newMealIds, $healthConsentAt, $healthConsentText
             ) {
                 $pdo->prepare(
                     'UPDATE iscrizioni
                         SET phone = ?, sleep_kind = ?, sleep_eur = ?, total_eur = ?,
-                            diet = ?, notes = ?
+                            diet = ?, notes = ?,
+                            health_consent_at = ?, health_consent_text = ?
                       WHERE id = ?'
                 )->execute([
                     $phone !== '' ? $phone : null,
                     $sleepKind, $sleepEur, $totalEur,
                     $diet  !== '' ? $diet  : null,
                     $notes !== '' ? $notes : null,
+                    $healthConsentAt,
+                    $healthConsentText,
                     (int)$iscrizione['id'],
                 ]);
 
@@ -468,6 +497,17 @@ ksort($mealsByDay);
         <div class="form-row">
           <label class="lbl" for="diet">Allergie / regime alimentare</label>
           <input type="text" id="diet" name="diet" value="<?= mh((string)($_POST['diet'] ?? '')) ?>" maxlength="255" placeholder="vegano, glutine, lattosio, …">
+          <div class="hint">Facoltativo. Se lo lasci vuoto non trattiamo alcun dato sulla tua salute o dieta.</div>
+
+          <?php
+            $dietPrefill   = (string)($_POST['diet'] ?? '');
+            $hadConsent    = !empty($iscrizione['health_consent_at']);
+          ?>
+          <label id="health-consent-row" for="health-consent"
+                 style="display:<?= $dietPrefill !== '' ? 'flex' : 'none' ?>;gap:12px;align-items:flex-start;margin-top:14px;padding:14px;border:2px solid var(--ink);border-radius:var(--r-sm);background:rgba(255,211,107,.18);font-family:var(--font-ui);font-size:13px;line-height:1.45;cursor:pointer;">
+            <input type="checkbox" id="health-consent" name="health_consent" value="1" <?= $hadConsent ? 'checked' : '' ?> style="width:22px;height:22px;flex-shrink:0;margin:0;">
+            <span><?= mh(HEALTH_CONSENT_TEXT) ?></span>
+          </label>
         </div>
 
         <div class="form-row">
@@ -493,6 +533,21 @@ ksort($mealsByDay);
   <script>
     // Topbar / footer presi dal pattern partials.
     if (window.TAB_mountPartials) window.TAB_mountPartials('iscrizione');
+
+    // Consenso art. 9: la casella compare solo se il campo allergie/dieta è valorizzato.
+    (function () {
+      var diet = document.getElementById('diet');
+      var row  = document.getElementById('health-consent-row');
+      var chk  = document.getElementById('health-consent');
+      if (!diet || !row || !chk) return;
+      function sync() {
+        var has = diet.value.trim() !== '';
+        row.style.display = has ? 'flex' : 'none';
+        if (!has) chk.checked = false;
+      }
+      diet.addEventListener('input', sync);
+      sync();
+    })();
   </script>
 </body>
 </html>

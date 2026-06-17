@@ -259,6 +259,13 @@ CREATE TABLE iscrizioni (
   ip            VARCHAR(45)       DEFAULT NULL,
   user_agent    VARCHAR(255)      DEFAULT NULL,
   privacy_consent_at TIMESTAMP    NULL DEFAULT NULL,
+  -- presa visione: versione dell'informativa vigente al momento dell'iscrizione
+  privacy_version    VARCHAR(40)  DEFAULT NULL,
+  -- consenso art. 9 (dati salute/dieta): valorizzati SOLO se l'iscritto ha compilato
+  -- il campo allergie/dieta e ha spuntato la casella dedicata. health_consent_text
+  -- conserva verbatim il testo mostrato accanto alla casella (onere della prova, art. 7.1).
+  health_consent_at   TIMESTAMP   NULL DEFAULT NULL,
+  health_consent_text TEXT        DEFAULT NULL,
   created_at    TIMESTAMP         NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),

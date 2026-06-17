@@ -147,7 +147,7 @@ function auth_create_user(string $username, ?string $email, string $password, st
 function audit_log(string $action, array $opts = []): void
 {
     try {
-        $u = auth_user();
+        $u = auth_user() ?? [];   // CLI / contesti senza sessione: nessun utente
         $stmt = db()->prepare(
             'INSERT INTO admin_audit (user_id, username, action, entity, entity_id, edition_id, payload, ip)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)'

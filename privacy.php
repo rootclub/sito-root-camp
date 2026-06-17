@@ -155,9 +155,10 @@
         <ul>
           <li><strong>Dati identificativi e di contatto</strong>: nominativo o pseudonimo, indirizzo di posta elettronica e, in via facoltativa, recapito telefonico, conferiti dall'Interessato ai fini della gestione del procedimento di iscrizione e dell'instaurazione delle conseguenti comunicazioni di servizio;</li>
           <li><strong>Fascia di età indicativa</strong> (maggiorenne, minorenne accompagnato dall'esercente la responsabilità genitoriale, ovvero "preferisco non specificare"), conferita per finalità di natura organizzativa e di sicurezza dei partecipanti;</li>
-          <li><strong>Dati relativi alle modalità di partecipazione</strong>: opzione di pernottamento prescelta, numero di tessere prepagate, allergie o regime alimentare seguito, eventuali annotazioni libere e aree tematiche di interesse, conferiti in funzione delle esigenze logistiche e di predisposizione del palinsesto;</li>
+          <li><strong>Dati relativi alle modalità di partecipazione</strong>: opzione di pernottamento prescelta, numero di tessere prepagate, eventuali annotazioni libere e aree tematiche di interesse, conferiti in funzione delle esigenze logistiche e di predisposizione del palinsesto;</li>
+          <li><strong>Categorie particolari di dati personali (art. 9 GDPR)</strong>: le informazioni in materia di allergie e di regime alimentare seguito, conferite in via meramente facoltativa, costituiscono dati relativi alla salute e possono altresì rivelare convinzioni religiose o filosofiche dell'Interessato; al loro trattamento è dedicata l'apposita sezione che segue, fondata sullo specifico consenso dell'Interessato;</li>
           <li><strong>Dati tecnici di connessione</strong>: indirizzo IP e <em>user-agent</em> del programma di navigazione utilizzato al momento dell'invio del modulo, trattati per finalità di sicurezza informatica, prevenzione di abusi e diagnostica del sistema;</li>
-          <li><strong>Data e ora di prestazione del consenso</strong> alla presente informativa, trattate al fine di consentire al Titolare l'assolvimento dell'onere della prova di cui all'art. 7, paragrafo 1, del GDPR.</li>
+          <li><strong>Dati attinenti al rilascio dei consensi</strong>: data e ora della presa visione della presente informativa e relativa versione, nonché, ove prestato, data e ora del consenso al trattamento dei dati di cui all'art. 9 unitamente al testo esatto della dichiarazione di consenso sottoscritta, trattati al fine di consentire al Titolare l'assolvimento dell'onere della prova di cui all'art. 7, paragrafo 1, del GDPR.</li>
         </ul>
         <p>
           Il Titolare, conscio della centralità del valore della tutela dei dati personali quale diritto
@@ -218,6 +219,48 @@
       </section>
 
       <section>
+        <h2>Trattamento di categorie particolari di dati: allergie e regime alimentare (art. 9 GDPR)</h2>
+        <p>
+          Il campo del modulo di iscrizione destinato all'indicazione di <strong>allergie e del regime
+          alimentare seguito</strong> è di compilazione <strong>meramente facoltativa</strong>. Le
+          informazioni ivi eventualmente conferite integrano <strong>dati relativi alla salute</strong> e,
+          potendo una determinata scelta alimentare disvelare <strong>convinzioni religiose o filosofiche</strong>
+          dell'Interessato, sono in ogni caso riconducibili alle <strong>categorie particolari di dati
+          personali</strong> di cui all'art. 9, paragrafo 1, del GDPR, come tali assistite da una tutela rafforzata.
+        </p>
+        <p>
+          <strong>Base giuridica.</strong> Il trattamento dei predetti dati è fondato esclusivamente sul
+          <strong>consenso esplicito</strong> manifestato dall'Interessato, ai sensi del combinato disposto
+          dell'art. 6, paragrafo 1, lettera a), e dell'art. 9, paragrafo 2, lettera a), del GDPR. Il consenso
+          è raccolto, al momento dell'invio del modulo, mediante una <strong>casella di spunta separata,
+          specifica e non preselezionata</strong>, distinta dalla dichiarazione di presa visione della presente
+          informativa e dall'accettazione del regolamento, e si rende visibile unicamente qualora il campo
+          relativo alle allergie o al regime alimentare risulti effettivamente valorizzato.
+        </p>
+        <p>
+          <strong>Finalità.</strong> I dati sono trattati al solo fine di garantire la <strong>sicurezza
+          alimentare</strong> dell'Interessato e di consentire la <strong>corretta organizzazione logistica
+          del servizio di ristorazione</strong> (catering) durante lo svolgimento dell'evento.
+        </p>
+        <p>
+          <strong>Modalità.</strong> Il trattamento è effettuato con modalità in parte automatizzate e in parte
+          manuali, da parte dei soli volontari e responsabili dell'organizzazione espressamente autorizzati,
+          nel rispetto dei principi di minimizzazione e di limitazione della conservazione. I dati non sono
+          oggetto di diffusione né di comunicazione a terzi.
+        </p>
+        <p>
+          <strong>Natura facoltativa e assenza di condizionamento.</strong> Il conferimento di tali dati e la
+          prestazione del relativo consenso sono <strong>del tutto facoltativi</strong>: l'iscrizione si
+          perfeziona regolarmente anche in difetto della loro compilazione e il rifiuto non determina alcuna
+          conseguenza pregiudizievole, salva l'impossibilità per il Titolare di tenere conto delle specifiche
+          esigenze alimentari non comunicate. Il consenso è <strong>revocabile in qualsiasi momento</strong>,
+          con la medesima agevolezza con cui è stato prestato, mediante semplice comunicazione all'indirizzo
+          <a href="mailto:presidente@rootclub.it">presidente@rootclub.it</a>, senza che ciò pregiudichi la
+          liceità del trattamento effettuato anteriormente alla revoca (art. 7, paragrafi 3 e 4, del GDPR).
+        </p>
+      </section>
+
+      <section>
         <h2>Periodo di conservazione dei dati personali (art. 5, par. 1, lett. e, GDPR)</h2>
         <p>
           In ossequio al principio di limitazione della conservazione di cui all'art. 5, paragrafo 1,
@@ -228,6 +271,15 @@
           la gestione di eventuali richieste di rimborso, di contestazioni, di contenziosi e di
           comunicazioni post-evento. Decorso il predetto termine, i dati personali sono
           <strong>cancellati ovvero resi anonimi in via irreversibile</strong>.
+        </p>
+        <p>
+          In deroga al termine generale che precede e in applicazione del principio di minimizzazione, i
+          <strong>dati relativi alla salute e al regime alimentare</strong> (categorie particolari ex art. 9
+          GDPR) sono soggetti a un <strong>distinto e più breve termine di conservazione</strong> e vengono
+          <strong>cancellati alla conclusione dell'evento</strong>, essendo il loro trattamento funzionale alle
+          sole esigenze di sicurezza alimentare e di organizzazione del servizio di ristorazione durante il
+          medesimo. La revoca del consenso prestato dall'Interessato comporta in ogni caso la cancellazione
+          anticipata dei predetti dati.
         </p>
         <p>
           Sono fatti salvi i diversi e più ampi termini di conservazione previsti da specifiche
@@ -272,7 +324,7 @@
           <li>il <strong>diritto di limitazione</strong> del trattamento, nelle ipotesi previste dall'art. 18;</li>
           <li>il <strong>diritto alla portabilità</strong> dei dati personali forniti al Titolare, in un formato strutturato, di uso comune e leggibile da dispositivo automatico, ai sensi dell'art. 20;</li>
           <li>il <strong>diritto di opposizione</strong> al trattamento fondato sul perseguimento del legittimo interesse del Titolare, ai sensi dell'art. 21;</li>
-          <li>il <strong>diritto di revocare il consenso</strong> eventualmente prestato, in qualsiasi momento, senza che ciò pregiudichi la liceità del trattamento basato sul consenso prestato anteriormente alla revoca, ai sensi dell'art. 7, paragrafo 3, del GDPR.</li>
+          <li>il <strong>diritto di revocare il consenso</strong> prestato al trattamento dei dati relativi alla salute e al regime alimentare (art. 9 GDPR), in qualsiasi momento e con la medesima agevolezza con cui è stato prestato, senza che ciò pregiudichi la liceità del trattamento effettuato sulla base del consenso prestato anteriormente alla revoca, ai sensi dell'art. 7, paragrafo 3, del GDPR; alla revoca consegue la cancellazione dei dati interessati.</li>
         </ul>
         <p>
           È fatto in ogni caso salvo il diritto di proporre <strong>reclamo all'Autorità Garante per la
@@ -322,7 +374,7 @@
       </section>
 
       <p class="meta-row">
-        Versione della presente informativa in vigore alla data del 3 maggio 2026.
+        Versione della presente informativa in vigore alla data del <?= htmlspecialchars(PRIVACY_VERSION_LABEL, ENT_QUOTES, 'UTF-8') ?>.
       </p>
     </div>
   </main>

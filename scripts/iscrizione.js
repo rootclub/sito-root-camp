@@ -105,6 +105,21 @@
   }
   updateRiepilogo();
 
+  // --------- Consenso art. 9 (salute/dieta): casella condizionale ---------
+  // Compare solo se il campo allergie/dieta è valorizzato; se l'utente svuota
+  // il campo, la casella si nasconde e si deseleziona (niente dato → niente consenso).
+  const dietInput   = document.getElementById('diet');
+  const healthRow   = document.getElementById('health-consent-row');
+  const healthCheck = document.getElementById('health-consent');
+  function syncHealthConsent() {
+    if (!dietInput || !healthRow || !healthCheck) return;
+    const hasDiet = dietInput.value.trim() !== '';
+    healthRow.style.display = hasDiet ? 'flex' : 'none';
+    if (!hasDiet) healthCheck.checked = false;
+  }
+  if (dietInput) dietInput.addEventListener('input', syncHealthConsent);
+  syncHealthConsent();
+
   // --------- Submit ---------
   const form = document.getElementById('reg-form');
   const msg  = document.getElementById('form-msg');
@@ -135,12 +150,21 @@
     const honeypot  = (document.getElementById('hp') || {}).value || '';
     const agree     = document.getElementById('agree').checked;
     const privacy   = document.getElementById('privacy').checked;
+    const healthConsent = !!(healthCheck && healthCheck.checked);
 
     if (!name || !email || !agree || !privacy) {
       msg.className = 'form-msg error';
       msg.textContent = !privacy
-        ? 'Per procedere devi accettare l\'informativa privacy.'
+        ? 'Per procedere devi dichiarare di aver preso visione dell\'informativa privacy.'
         : 'Compila nome, email e accetta il regolamento.';
+      return;
+    }
+
+    // Se ha indicato allergie/dieta deve dare il consenso art. 9, altrimenti
+    // non possiamo trattare quel dato: non lo inviamo affatto.
+    if (diet !== '' && !healthConsent) {
+      msg.className = 'form-msg error';
+      msg.textContent = 'Hai indicato allergie o un regime alimentare: per trattare questo dato spunta la casella di consenso, oppure svuota il campo per proseguire senza.';
       return;
     }
 
@@ -159,6 +183,7 @@
           diet,
           notes,
           privacy_accepted: true,
+          health_consent: healthConsent,
           _hp: honeypot,
         }),
       });
@@ -174,6 +199,7 @@
         `;
         form.reset();
         updateRiepilogo();
+        syncHealthConsent();
         return;
       }
 

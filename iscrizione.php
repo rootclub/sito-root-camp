@@ -532,6 +532,15 @@
           <div class="form-row">
             <label class="lbl" for="diet">Allergie / regime alimentare</label>
             <input type="text" id="diet" name="diet" placeholder="vegano, glutine, lattosio, …">
+            <div class="hint">Facoltativo. Se lo lasci vuoto non trattiamo alcun dato sulla tua salute o dieta.</div>
+
+            <!-- Consenso art. 9 GDPR: compare SOLO se il campo allergie/dieta è valorizzato.
+                 Separato dalla presa visione, opt-in (non pre-spuntato), non condizionante
+                 l'iscrizione (chi non compila allergie/dieta non lo vede nemmeno). -->
+            <label class="consent-row consent-health" id="health-consent-row" for="health-consent" style="display:none;margin-top:14px;border:2px solid var(--ink);background:rgba(255,211,107,.18);">
+              <input type="checkbox" id="health-consent" class="consent-check">
+              <span><?= htmlspecialchars(HEALTH_CONSENT_TEXT, ENT_QUOTES, 'UTF-8') ?></span>
+            </label>
           </div>
 
           <div class="form-row">
@@ -546,7 +555,7 @@
             </label>
             <label class="consent-row" for="privacy">
               <input type="checkbox" id="privacy" class="consent-check" required>
-              <span>Ho letto l'<a href="privacy.php" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati personali per la gestione dell'iscrizione.<span class="req">*</span></span>
+              <span>Dichiaro di aver preso visione dell'<a href="privacy.php" target="_blank" rel="noopener">informativa privacy</a>.<span class="req">*</span></span>
             </label>
           </div>
 

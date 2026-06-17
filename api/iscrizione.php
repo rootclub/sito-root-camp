@@ -76,6 +76,13 @@ $meals = array_values(array_unique(array_filter(
 $privacyRaw = $get('privacy_accepted', false);
 $privacyAccepted = filter_var($privacyRaw, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
 
+// Consenso art. 9 (salute/dieta). Rilevante solo se l'iscritto ha compilato il
+// campo allergie/dieta: in quel caso è obbligatorio. Se il campo è vuoto, nessun
+// dato di salute viene trattato e il consenso è irrilevante.
+$healthConsentRaw = $get('health_consent', false);
+$healthConsent = filter_var($healthConsentRaw, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
+$hasDiet = $diet !== '';
+
 $errors = [];
 if ($name === '' || mb_strlen($name) > 160)             $errors[] = 'Nome obbligatorio.';
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 180) $errors[] = 'Email non valida.';
@@ -83,7 +90,8 @@ if (mb_strlen($phone) > 40)                             $errors[] = 'Telefono tr
 if (mb_strlen($diet) > 255)                             $errors[] = 'Dieta troppo lunga (max 255).';
 if (mb_strlen($notes) > 1000)                           $errors[] = 'Note troppo lunghe (max 1000).';
 if (count($meals) > 50)                                 $errors[] = 'Troppi pasti selezionati.';
-if (!$privacyAccepted)                                  $errors[] = 'È necessario accettare l\'informativa privacy.';
+if (!$privacyAccepted)                                  $errors[] = 'È necessario dichiarare di aver preso visione dell\'informativa privacy.';
+if ($hasDiet && !$healthConsent)                        $errors[] = 'Per trattare allergie/regime alimentare è necessario il consenso dedicato.';
 
 // Verifica sleep_kind contro le opzioni disponibili dell'edizione corrente
 $stmt = db()->prepare(
@@ -131,18 +139,27 @@ $totalEur  = $ticketEur + $sleepEur;
 // ---- Token modifica (32 hex). UNIQUE in DB → ritento in caso di collisione (improbabile). ----
 $editToken = bin2hex(random_bytes(16));
 
+// ---- Consenso art. 9: valorizzato SOLO se ci sono dati di salute/dieta.
+// Si salva il testo canonico lato server (non quello inviato dal client) per
+// l'onere della prova ex art. 7.1: è esattamente ciò che la pagina mostra. ----
+$healthConsentAt   = $hasDiet ? date('Y-m-d H:i:s') : null;
+$healthConsentText = $hasDiet ? HEALTH_CONSENT_TEXT : null;
+$privacyVersion    = PRIVACY_VERSION;
+
 // ---- Insert in transazione: iscrizioni + iscrizione_meals ----
 try {
     $newId = db_tx(function (PDO $pdo) use (
         $edId, $name, $email, $phone, $sleepKind, $diet, $notes,
-        $ticketEur, $sleepEur, $totalEur, $editToken, $meals, $mealIdsByCode
+        $ticketEur, $sleepEur, $totalEur, $editToken, $meals, $mealIdsByCode,
+        $privacyVersion, $healthConsentAt, $healthConsentText
     ): int {
         $pdo->prepare(
             'INSERT INTO iscrizioni
               (edition_id, name, email, phone, sleep_kind, n_cards,
                ticket_eur, sleep_eur, cards_eur, total_eur, diet, notes, edit_token,
-               ip, user_agent, privacy_consent_at)
-             VALUES (?, ?, ?, ?, ?, 0, ?, ?, 0, ?, ?, ?, ?, ?, ?, NOW())'
+               ip, user_agent, privacy_consent_at, privacy_version,
+               health_consent_at, health_consent_text)
+             VALUES (?, ?, ?, ?, ?, 0, ?, ?, 0, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)'
         )->execute([
             $edId, $name, $email, $phone !== '' ? $phone : null,
             $sleepKind,
@@ -152,6 +169,9 @@ try {
             $editToken,
             client_ip(),
             substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255),
+            $privacyVersion,
+            $healthConsentAt,
+            $healthConsentText,
         ]);
         $id = (int)$pdo->lastInsertId();
 
