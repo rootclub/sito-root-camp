@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Self-protection: non posso degradarmi né disattivarmi.
             if ($id === $myId) {
                 if ($role !== 'admin')  $errors[] = 'Non puoi cambiare il tuo stesso ruolo. Chiedi a un altro admin.';
-                if (!$isActive)         $errors[] = 'Non puoi disattivare te stessə.';
+                if (!$isActive)         $errors[] = 'Non puoi disattivare te stess*.';
             }
 
             // Last-admin protection.
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $degrade   = $role !== 'admin';
                 $deactivate = !$isActive;
                 if (($degrade || $deactivate) && count_active_admins() <= 1) {
-                    $errors[] = 'Sei l\'ultimə admin attivə: non puoi rimuoverti il ruolo o disattivarti senza prima creare/promuovere un altro admin.';
+                    $errors[] = 'Sei l\'ultim* admin attiv*: non puoi rimuoverti il ruolo o disattivarti senza prima creare/promuovere un altro admin.';
                 }
             }
 
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'delete': {
             $id = post_int('id');
             if ($id === $myId) {
-                flash_set('error', 'Non puoi eliminare te stessə.');
+                flash_set('error', 'Non puoi eliminare te stess*.');
                 redirect('/admin/users.php');
             }
             $stmt = db()->prepare('SELECT username, role, is_active FROM admin_users WHERE id = ? LIMIT 1');
@@ -264,7 +264,7 @@ admin_layout_open('Utenti', 'users');
         <input type="checkbox" name="is_active" value="1"
                <?= !empty($editing['is_active']) ? 'checked' : '' ?>
                <?= $isSelf ? 'disabled' : '' ?>>
-        <span>Attivo <?php if ($isSelf): ?><span class="muted">non puoi disattivare te stessə</span><?php endif; ?></span>
+        <span>Attivo <?php if ($isSelf): ?><span class="muted">non puoi disattivare te stess*</span><?php endif; ?></span>
         <?php if ($isSelf): ?>
           <input type="hidden" name="is_active" value="1">
         <?php endif; ?>

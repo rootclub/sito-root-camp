@@ -211,8 +211,8 @@ admin_layout_open('Info edizione', 'meta');
     <input type="email" name="contact_email" value="<?= e((string)$ed['contact_email']) ?>" maxlength="180">
   </label>
   <label class="field">
-    <span class="field-label">Matrix</span>
-    <input type="text" name="contact_matrix" value="<?= e((string)$ed['contact_matrix']) ?>" maxlength="180">
+    <span class="field-label">Bluesky</span>
+    <input type="text" name="contact_matrix" value="<?= e((string)$ed['contact_matrix']) ?>" maxlength="180" placeholder="handle.bsky.social">
   </label>
   <label class="field">
     <span class="field-label">Telegram</span>

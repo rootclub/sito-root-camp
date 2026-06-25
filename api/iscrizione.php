@@ -62,6 +62,7 @@ $edId = (int)$ed['id'];
 $name      = trim((string)$get('name'));
 $email     = trim((string)$get('email'));
 $phone     = trim((string)$get('phone'));
+$age       = trim((string)$get('age'));
 $sleepKind = trim((string)$get('sleep_kind'));
 $diet      = trim((string)$get('diet'));
 $notes     = trim((string)$get('notes'));
@@ -87,24 +88,33 @@ $errors = [];
 if ($name === '' || mb_strlen($name) > 160)             $errors[] = 'Nome obbligatorio.';
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 180) $errors[] = 'Email non valida.';
 if (mb_strlen($phone) > 40)                             $errors[] = 'Telefono troppo lungo.';
+if (!in_array($age, ['adult', 'minor'], true))          $errors[] = 'Età indicativa non valida.';
 if (mb_strlen($diet) > 255)                             $errors[] = 'Dieta troppo lunga (max 255).';
 if (mb_strlen($notes) > 1000)                           $errors[] = 'Note troppo lunghe (max 1000).';
 if (count($meals) > 50)                                 $errors[] = 'Troppi pasti selezionati.';
 if (!$privacyAccepted)                                  $errors[] = 'È necessario dichiarare di aver preso visione dell\'informativa privacy.';
 if ($hasDiet && !$healthConsent)                        $errors[] = 'Per trattare allergie/regime alimentare è necessario il consenso dedicato.';
 
-// Verifica sleep_kind contro le opzioni disponibili dell'edizione corrente
+// Verifica sleep_kind. is_available = selezionabile: solo le opzioni con
+// is_available = 1 sono prenotabili. Le altre esistono ma sono "esaurite".
 $stmt = db()->prepare(
-    'SELECT kind, price_eur FROM sleep_options
-      WHERE edition_id = ? AND is_available = 1'
+    'SELECT kind, price_eur, is_available FROM sleep_options
+      WHERE edition_id = ?'
 );
 $stmt->execute([$edId]);
 $availSleep = [];
+$soldOutKinds = [];
 foreach ($stmt->fetchAll() as $r) {
-    $availSleep[(string)$r['kind']] = (int)$r['price_eur'];
+    if (!empty($r['is_available'])) {
+        $availSleep[(string)$r['kind']] = (int)$r['price_eur'];
+    } else {
+        $soldOutKinds[(string)$r['kind']] = true;
+    }
 }
 if (!isset($availSleep[$sleepKind])) {
-    $errors[] = 'Opzione di pernottamento non valida.';
+    $errors[] = isset($soldOutKinds[$sleepKind])
+        ? 'L\'opzione di pernottamento scelta è esaurita.'
+        : 'Opzione di pernottamento non valida.';
 }
 
 // Verifica meal codes contro meal_slots dell'edizione
@@ -149,19 +159,20 @@ $privacyVersion    = PRIVACY_VERSION;
 // ---- Insert in transazione: iscrizioni + iscrizione_meals ----
 try {
     $newId = db_tx(function (PDO $pdo) use (
-        $edId, $name, $email, $phone, $sleepKind, $diet, $notes,
-        $ticketEur, $sleepEur, $totalEur, $editToken, $meals, $mealIdsByCode,
+        $edId, $name, $email, $phone, $age, $sleepKind, $diet, $notes,
+        $ticketEur, $sleepEur, $totalEur, $editToken, $meals, $mealIdsByCode
         $privacyVersion, $healthConsentAt, $healthConsentText
     ): int {
         $pdo->prepare(
             'INSERT INTO iscrizioni
-              (edition_id, name, email, phone, sleep_kind, n_cards,
+              (edition_id, name, email, phone, age, sleep_kind, n_cards,
                ticket_eur, sleep_eur, cards_eur, total_eur, diet, notes, edit_token,
                ip, user_agent, privacy_consent_at, privacy_version,
                health_consent_at, health_consent_text)
-             VALUES (?, ?, ?, ?, ?, 0, ?, ?, 0, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)'
+             VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, 0, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)'
         )->execute([
             $edId, $name, $email, $phone !== '' ? $phone : null,
+            $age,
             $sleepKind,
             $ticketEur, $sleepEur, $totalEur,
             $diet  !== '' ? $diet  : null,

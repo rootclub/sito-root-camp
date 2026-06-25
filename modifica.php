@@ -46,9 +46,11 @@ $mealSlots = [];
 $selectedMealIds = [];
 
 if ($iscrizione && $edition) {
+    // is_available = selezionabile: le opzioni esaurite sono comunque mostrate
+    // (disabilitate, marcate "Esaurito"), allineato a iscrizione.html.
     $stmt = db()->prepare(
-        'SELECT kind, title, body, price_eur FROM sleep_options
-          WHERE edition_id = ? AND is_available = 1 ORDER BY sort, id'
+        'SELECT kind, title, body, price_eur, is_available FROM sleep_options
+          WHERE edition_id = ? ORDER BY sort, id'
     );
     $stmt->execute([(int)$edition['id']]);
     $sleepOpts = $stmt->fetchAll();
@@ -72,6 +74,7 @@ if ($iscrizione && $edition) {
 // ---- Submit ----
 if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = isset($_POST['phone']) && is_string($_POST['phone']) ? trim($_POST['phone']) : '';
+    $age   = isset($_POST['age'])   && is_string($_POST['age'])   ? trim($_POST['age'])   : '';
     $sleepKind = isset($_POST['sleep_kind']) && is_string($_POST['sleep_kind']) ? trim($_POST['sleep_kind']) : '';
     $diet  = isset($_POST['diet'])  && is_string($_POST['diet'])  ? trim($_POST['diet'])  : '';
     $notes = isset($_POST['notes']) && is_string($_POST['notes']) ? trim($_POST['notes']) : '';
@@ -92,16 +95,29 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
     )));
 
     if (mb_strlen($phone) > 40)  $errors[] = 'Telefono troppo lungo.';
+    if (!in_array($age, ['adult', 'minor'], true)) $errors[] = 'Età indicativa non valida.';
     if (mb_strlen($diet)  > 255) $errors[] = 'Dieta troppo lunga (max 255).';
     if (mb_strlen($notes) > 1000) $errors[] = 'Note troppo lunghe (max 1000).';
     if ($hasDiet && !$healthConsent && !$alreadyConsented) {
         $errors[] = 'Per indicare allergie/regime alimentare devi spuntare la casella di consenso, oppure svuota il campo.';
     }
 
-    // Verifica sleep_kind
+    // Verifica sleep_kind: solo le opzioni con is_available = 1 sono selezionabili,
+    // ma si può MANTENERE l'opzione già scelta anche se nel frattempo è esaurita.
     $availSleep = [];
     foreach ($sleepOpts as $s) {
-        $availSleep[(string)$s['kind']] = (int)$s['price_eur'];
+        if (!empty($s['is_available'])) {
+            $availSleep[(string)$s['kind']] = (int)$s['price_eur'];
+        }
+    }
+    $currentKind = (string)$iscrizione['sleep_kind'];
+    if (!isset($availSleep[$currentKind])) {
+        foreach ($sleepOpts as $s) {
+            if ((string)$s['kind'] === $currentKind) {
+                $availSleep[$currentKind] = (int)$s['price_eur'];
+                break;
+            }
+        }
     }
     if (!isset($availSleep[$sleepKind])) {
         $errors[] = 'Opzione di pernottamento non valida.';
@@ -145,17 +161,18 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             db_tx(function (PDO $pdo) use (
-                $iscrizione, $phone, $sleepKind, $sleepEur, $totalEur,
+                $iscrizione, $phone, $age, $sleepKind, $sleepEur, $totalEur,
                 $diet, $notes, $newMealIds, $healthConsentAt, $healthConsentText
             ) {
                 $pdo->prepare(
                     'UPDATE iscrizioni
-                        SET phone = ?, sleep_kind = ?, sleep_eur = ?, total_eur = ?,
+                        SET phone = ?, age = ?, sleep_kind = ?, sleep_eur = ?, total_eur = ?,
                             diet = ?, notes = ?,
                             health_consent_at = ?, health_consent_text = ?
                       WHERE id = ?'
                 )->execute([
                     $phone !== '' ? $phone : null,
+                    $age,
                     $sleepKind, $sleepEur, $totalEur,
                     $diet  !== '' ? $diet  : null,
                     $notes !== '' ? $notes : null,
@@ -191,6 +208,7 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
     // GET: pre-compila i POST con i valori esistenti per la form
     if ($iscrizione) {
         $_POST['phone']      = (string)($iscrizione['phone'] ?? '');
+        $_POST['age']        = (string)($iscrizione['age'] ?? 'adult');
         $_POST['sleep_kind'] = (string)($iscrizione['sleep_kind'] ?? '');
         $_POST['diet']       = (string)($iscrizione['diet'] ?? '');
         $_POST['notes']      = (string)($iscrizione['notes'] ?? '');
@@ -314,6 +332,8 @@ ksort($mealsByDay);
       box-shadow: inset 0 0 0 4px var(--cream);
     }
     .radio-cards label:has(input:checked) { background: var(--sun); }
+    .radio-cards label.sold-out { opacity: .55; cursor: not-allowed; background: #f3efe6; }
+    .radio-cards label.sold-out input[type="radio"] { cursor: not-allowed; }
     .rc-text strong { display: block; font-family: var(--font-display); font-size: 17px; margin-bottom: 4px; }
     .rc-text span { font-size: 14px; color: var(--ink-dim); }
     .rc-price {
@@ -322,6 +342,7 @@ ksort($mealsByDay);
       background: var(--ink); color: var(--cream); border-radius: 999px;
     }
     .rc-price.free { background: var(--grass-3); }
+    .rc-price.sold { background: transparent; color: var(--ink-dim); border: 2px solid var(--ink-dim); }
 
     .meal-grid { display: grid; gap: 18px; }
     .meal-day-head {
@@ -430,6 +451,15 @@ ksort($mealsByDay);
           <input type="tel" id="phone" name="phone" value="<?= mh((string)($_POST['phone'] ?? '')) ?>" maxlength="40" placeholder="opzionale, per contattarti se serve">
         </div>
 
+        <?php $curAge = (string)($_POST['age'] ?? 'adult'); ?>
+        <div class="form-row">
+          <label class="lbl" for="age">Età indicativa</label>
+          <select id="age" name="age">
+            <option value="adult"<?= $curAge === 'adult' ? ' selected' : '' ?>>adulto</option>
+            <option value="minor"<?= $curAge === 'minor' ? ' selected' : '' ?>>minorenne accompagnato</option>
+          </select>
+        </div>
+
         <hr class="divider">
 
         <h2 class="h-2" style="margin-bottom:14px;">Dove dormi</h2>
@@ -438,18 +468,19 @@ ksort($mealsByDay);
             <?php
               $currentSleep = (string)($_POST['sleep_kind'] ?? $iscrizione['sleep_kind']);
               foreach ($sleepOpts as $o):
-                $price = (int)$o['price_eur'];
-                $priceLabel = $price === 0 ? 'incluso' : ('+' . $price . ' €');
-                $cls = $price === 0 ? ' free' : '';
-                $checked = ((string)$o['kind'] === $currentSleep);
+                $kind    = (string)$o['kind'];
+                $checked = ($kind === $currentSleep);
+                // Esaurito = non selezionabile, tranne se è già l'opzione scelta
+                // (la si può mantenere, non si perde la prenotazione).
+                $soldOut = empty($o['is_available']) && !$checked;
             ?>
-              <label>
-                <input type="radio" name="sleep_kind" value="<?= mh((string)$o['kind']) ?>" <?= $checked ? 'checked' : '' ?>>
+              <label class="<?= $soldOut ? 'sold-out' : '' ?>">
+                <input type="radio" name="sleep_kind" value="<?= mh($kind) ?>" <?= $checked ? 'checked' : '' ?> <?= $soldOut ? 'disabled' : '' ?>>
                 <div class="rc-text">
                   <strong><?= mh((string)$o['title']) ?></strong>
                   <span><?= mh((string)$o['body']) ?></span>
                 </div>
-                <span class="rc-price<?= $cls ?>"><?= mh($priceLabel) ?></span>
+                <?= $soldOut ? '<span class="rc-price sold">Esaurito</span>' : '' ?>
               </label>
             <?php endforeach; ?>
           </div>
@@ -511,7 +542,7 @@ ksort($mealsByDay);
         </div>
 
         <div class="form-row">
-          <label class="lbl" for="notes">Note libere</label>
+          <label class="lbl" for="notes">Richieste Aggiuntive</label>
           <textarea id="notes" name="notes" maxlength="1000"><?= mh((string)($_POST['notes'] ?? '')) ?></textarea>
         </div>
 

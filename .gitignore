@@ -19,6 +19,12 @@ Thumbs.db
 # --- temporanei / debug ---
 scraps/
 
+# --- htaccess ---
+# I sorgenti sono versionati come _.htaccess (Nextcloud non sincronizza i file
+# che iniziano con un punto). Il nome di produzione .htaccess lo genera deploy.sh
+# in upload: qui lo ignoriamo per evitare commit accidentali del nome deployato.
+.htaccess
+
 # --- dipendenze / build (per ora nessuna, ma futuro-proofing) ---
 node_modules/
 vendor/

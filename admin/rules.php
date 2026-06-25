@@ -23,7 +23,9 @@ $edId = (int)$ed['id'];
 
 // Icone supportate dal frontend (vedi scripts/regolamento.js).
 // Se aggiungi una nuova chiave qui, devi anche aggiungere lo SVG in scripts/regolamento.js.
-const RULE_ICONS = ['ticket', 'card', 'clock', 'moon', 'volume', 'tent'];
+const RULE_ICONS = ['ticket', 'card', 'clock', 'moon', 'volume', 'tent',
+    'terminal', 'code', 'monitor', 'beer', 'coffee', 'food', 'wifi', 'sun',
+    'music', 'heart', 'info', 'warning', 'lock', 'key', 'map'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();

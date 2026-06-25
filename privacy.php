@@ -24,15 +24,14 @@
       margin: 0 auto;
       padding: 56px 0 80px;
     }
-    .privacy-wrap section { margin-bottom: 44px; }
+    .privacy-wrap section { margin-bottom: 8px; }
     .privacy-wrap h2 {
       font-family: var(--font-display);
       font-size: clamp(22px, 2.6vw, 30px);
       letter-spacing: -.01em;
-      margin-bottom: 14px;
-      padding-top: 6px;
+      margin-bottom: 10px;
       border-top: 2px dashed rgba(15,42,26,.18);
-      padding-top: 22px;
+      padding-top: 8px;
     }
     .privacy-wrap section:first-of-type h2 { border-top: none; padding-top: 0; }
     .privacy-wrap p,
@@ -42,7 +41,7 @@
       line-height: 1.65;
       color: var(--ink);
     }
-    .privacy-wrap p { margin-bottom: 12px; }
+    .privacy-wrap p { margin-bottom: 3px; }
     .privacy-wrap ul { padding-left: 22px; margin-bottom: 12px; }
     .privacy-wrap li { margin-bottom: 6px; }
     .privacy-wrap a {
@@ -106,17 +105,15 @@
 
   <section class="page-hero">
     <div class="wrap">
-      <div class="sec-eyebrow">informativa ex art. 13 reg. (UE) 2016/679</div>
-      <h1>Informativa sul trattamento dei dati personali.</h1>
+      <div class="sec-eyebrow">informativa privacy &amp; cookie · sito web</div>
+      <h1>Privacy e cookie del sito.</h1>
       <p class="dim">
-        La presente informativa è resa ai sensi e per gli effetti dell'art. 13 del Regolamento
-        (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016 (di seguito, "GDPR")
-        nonché del D.Lgs. 30 giugno 2003, n. 196, come novellato dal D.Lgs. 10 agosto 2018, n. 101,
-        in favore dei soggetti i cui dati personali sono trattati dal Titolare in occasione del
-        procedimento di iscrizione all'evento e della successiva esecuzione del rapporto.
-        In ossequio al combinato disposto dell'art. 122 del D.Lgs. 196/2003 e dell'art. 5, paragrafo 3,
-        della Direttiva 2002/58/CE, non sono installati cookie di profilazione, né strumenti di analisi
-        statistica del traffico, né tecnologie funzionalmente equivalenti.
+        La presente informativa, resa ai sensi dell'art. 13 del Regolamento (UE) 2016/679 (di seguito,
+        "GDPR") nonché del D.Lgs. 30 giugno 2003, n. 196, come novellato dal D.Lgs. 10 agosto 2018, n. 101,
+        riguarda il trattamento dei dati personali connesso alla navigazione del presente sito web
+        istituzionale di /RooT-Camp e l'utilizzo dei cookie. Per il trattamento dei dati personali raccolti
+        tramite il <strong>modulo di iscrizione</strong> all'evento si applica l'<a href="privacy-iscrizione.html">informativa
+        privacy dedicata all'iscrizione</a>.
       </p>
     </div>
   </section>
@@ -129,7 +126,7 @@
         <div class="kv-table">
           <dl>
             <dt>Titolare</dt>
-            <dd>Associazione Root APS</dd>
+            <dd>Associazione Root APS — Via Santa Croce, 6669, 47032 San Pietro In Guardiano (FC)</dd>
             <dt>Contatto privacy</dt>
             <dd><a href="mailto:presidente@rootclub.it">presidente@rootclub.it</a></dd>
           </dl>
@@ -190,31 +187,11 @@
           diffusione o cessione a terze parti per finalità commerciali, di marketing o ulteriori rispetto
           a quelle puntualmente indicate nella presente informativa.
         </p>
-      </section>
-
-      <section>
-        <h2>Finalità del trattamento e basi giuridiche di liceità ai sensi dell'art. 6 GDPR</h2>
-        <p>I dati personali sono oggetto di trattamento per le seguenti finalità, in forza delle corrispondenti basi giuridiche di liceità:</p>
-        <ul>
-          <li>
-            <strong>Gestione della procedura di iscrizione e partecipazione all'evento</strong> — base giuridica: esecuzione di misure precontrattuali adottate su richiesta dell'Interessato e successiva esecuzione del rapporto, ai sensi dell'art. 6, paragrafo 1, lettera b), del GDPR.
-          </li>
-          <li>
-            <strong>Esecuzione delle comunicazioni di servizio</strong> afferenti all'evento (conferma dell'avvenuta iscrizione, informazioni logistiche, comunicazione di eventuali variazioni organizzative) — medesima base giuridica di cui al punto che precede.
-          </li>
-          <li>
-            <strong>Tutela della sicurezza informatica, prevenzione di condotte abusive e diagnostica del sistema</strong> (trattamento dell'indirizzo IP e dello <em>user-agent</em>) — base giuridica: perseguimento del legittimo interesse del Titolare alla protezione delle proprie infrastrutture tecnologiche, ai sensi dell'art. 6, paragrafo 1, lettera f), del GDPR, previo positivo bilanciamento con i diritti e le libertà fondamentali dell'Interessato.
-          </li>
-          <li>
-            <strong>Adempimento di obblighi di legge</strong> cui è soggetto il Titolare, ivi incluso il riscontro a richieste legittimamente formulate dall'Autorità giudiziaria o da pubbliche amministrazioni — base giuridica: art. 6, paragrafo 1, lettera c), del GDPR.
-          </li>
-        </ul>
         <p>
-          Si dà espressamente atto che il Titolare <strong>non pone in essere alcuna attività di
-          marketing diretto</strong>: non procede all'iscrizione dell'Interessato a servizi di
-          <em>newsletter</em>, non cede i dati personali a terze parti per finalità promozionali, né
-          trasmette comunicazioni a carattere pubblicitario. La sola corrispondenza elettronica
-          intrattenuta con l'Interessato è quella strettamente funzionale al procedimento di iscrizione.
+          Il sito web è ospitato su infrastruttura ubicata sul territorio della Repubblica italiana
+          (rootclub.it / Plesk), il cui fornitore è designato Responsabile del trattamento ai sensi
+          dell'art. 28 del GDPR; non sussiste pertanto alcun trasferimento di dati al di fuori dello
+          Spazio Economico Europeo.
         </p>
       </section>
 
@@ -333,20 +310,6 @@
           ai sensi dell'art. 77 del GDPR, ovvero di adire la competente Autorità giurisdizionale ai sensi
           dell'art. 79 del medesimo Regolamento, qualora l'Interessato ritenga che il trattamento dei
           propri dati personali avvenga in violazione delle disposizioni in materia.
-        </p>
-      </section>
-
-      <section>
-        <h2>Natura del conferimento dei dati e conseguenze del rifiuto</h2>
-        <p>
-          Il conferimento dei dati personali contrassegnati quali obbligatori nel modulo di iscrizione
-          riveste <strong>carattere necessario</strong> ai fini del perfezionamento del procedimento di
-          iscrizione e dell'instaurazione del relativo rapporto: l'eventuale rifiuto, totale o parziale,
-          di fornire i predetti dati comporta l'oggettiva impossibilità per il Titolare di dare seguito
-          alla richiesta dell'Interessato. Il conferimento dei restanti dati personali riveste invece
-          carattere meramente <strong>facoltativo</strong> e il loro mancato inserimento non produce alcuna
-          conseguenza pregiudizievole in capo all'Interessato, fatta salva una eventuale minore efficacia
-          nella predisposizione organizzativa da parte del Titolare.
         </p>
       </section>
 

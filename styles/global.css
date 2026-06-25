@@ -701,6 +701,23 @@ a.floater:active { box-shadow: 1px 1px 0 var(--ink); }
 .floater.f-birra     { top: calc(46% + 150px); left: calc(50% + 30px); transform: translate(-50%, -50%); background: var(--sun); color: var(--ink); animation-delay: -2.1s; --rot: -3deg; z-index: 6; }
 .floater.f-cucina    { top: calc(48% + 200px); right: 4%; background: var(--sky-3); color: var(--ink); animation-delay: -1.7s; --rot: 5deg; z-index: 6; }
 .floater.f-campeggio { bottom: calc(clamp(140px, 22vh, 260px) + 400px); right: 4%; background: var(--cream); color: var(--ink); animation-delay: -3s; --rot: 8deg; z-index: 6; }
+.floater.f-patrocinio {
+  top: 294px; right: 4%;
+  gap: 10px;
+  padding: 8px 12px;
+  max-width: 230px;
+  background: var(--cream); color: var(--ink);
+  text-transform: none; letter-spacing: 0;
+  animation: float-patrocinio 5s ease-in-out infinite;
+  animation-delay: -2.5s; --rot: 4deg; z-index: 7;
+}
+@keyframes float-patrocinio {
+  0%,100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  50%     { transform: translateY(-28px) rotate(var(--rot, 0deg)); }
+}
+.floater.f-patrocinio img { width: 42px; height: 42px; object-fit: contain; flex: 0 0 auto; }
+.floater.f-patrocinio span { display: flex; flex-direction: column; font-size: 10px; font-weight: 600; line-height: 1.3; text-align: left; }
+.floater.f-patrocinio strong { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
 @keyframes float {
   0%,100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
   50%     { transform: translateY(-14px) rotate(var(--rot, 0deg)); }

@@ -69,12 +69,17 @@
     const sponsors = (window.TAB_CURRENT_EDITION && Array.isArray(window.TAB_CURRENT_EDITION.sponsors))
       ? window.TAB_CURRENT_EDITION.sponsors
       : [];
+    const orgsSec = document.getElementById('orgs');
     if (sponsors.length === 0) {
       const sec = document.getElementById('sponsors');
       if (sec) sec.hidden = true;
+      // Senza sponsor, "chi lo fa" torna prima sezione cream: padding pieno.
+      if (orgsSec) orgsSec.style.paddingTop = '';
     } else {
       const sec = document.getElementById('sponsors');
       if (sec) sec.hidden = false;
+      // Con gli sponsor sopra (stesso sfondo), "chi lo fa" sta a filo.
+      if (orgsSec) orgsSec.style.paddingTop = '0';
       spEl.innerHTML = sponsors.map(s => {
         const cls = 'tile hov';
         const baseStyle = 'min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;';
@@ -97,9 +102,20 @@
   if (orgsEl) {
     const bgs = ['sun', 'sky', 'grass', ''];
     orgsEl.innerHTML = window.TAB_CURRENT_EDITION.organizers.map((o, i) => {
-      const cls = `tile hov ${bgs[i % bgs.length]}`;
-      const baseStyle = `min-height:180px;display:flex;flex-direction:column;justify-content:space-between;${o.placeholder ? 'border-style:dashed;opacity:.7;' : ''}`;
-      const inner = `
+      const hasPhoto = !!o.photo;
+      const cls = `tile hov ${hasPhoto ? '' : bgs[i % bgs.length]}`;
+      const baseStyle = `min-height:180px;display:flex;flex-direction:column;${hasPhoto ? 'background:#fff;' : 'justify-content:space-between;'}${o.placeholder ? 'border-style:dashed;opacity:.7;' : ''}`;
+      const inner = hasPhoto
+        ? `
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:8px 0;">
+          <img src="${o.photo}" alt="${o.name}" style="max-width:100%;max-height:130px;object-fit:contain;">
+        </div>
+        <div style="text-align:center;">
+          ${o.role ? `<div class="mono" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.75;">${o.role}</div>` : ''}
+          <div style="font-family:var(--font-display);font-size:18px;line-height:1.1;font-weight:700;">${o.name}</div>
+        </div>
+      `
+        : `
         <div class="mono" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.75;">${o.role}</div>
         <div style="font-family:var(--font-display);font-size:22px;line-height:1.1;font-weight:700;">${o.name}</div>
       `;
