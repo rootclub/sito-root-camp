@@ -89,6 +89,9 @@
       transition: background .12s ease, transform .12s ease;
     }
     .radio-cards label:hover { background: #fffaf0; transform: translateX(2px); }
+    .radio-cards label.sold-out { opacity: .55; cursor: not-allowed; background: #f3efe6; }
+    .radio-cards label.sold-out:hover { background: #f3efe6; transform: none; }
+    .radio-cards label.sold-out input[type="radio"] { cursor: not-allowed; }
     .radio-cards input[type="radio"] {
       appearance: none;
       width: 22px; height: 22px;
@@ -129,6 +132,7 @@
       border-radius: 999px;
     }
     .rc-price.free { background: var(--grass-3); }
+    .rc-price.sold { background: transparent; color: var(--ink-dim); border: 2px solid var(--ink-dim); }
 
     /* checkbox grid (interessi) */
     .checks {
@@ -429,7 +433,7 @@
         Tieniti il posto <em class="hand" style="font-style:normal;color:var(--ink);">nel prato</em>.
       </h1>
       <p style="max-width:54ch;margin-top:18px;font-size:18px;">
-        Compila, arrivi. Niente bagarini, niente liste segrete. Con il biglietto minimo dentro c'è il braccialetto.
+        Compila, arrivi. <strong>Ingresso a offerta libera</strong> e aperto a tutt* — niente tessere, niente vincoli. Iscriviti e basta, così sappiamo quant* saremo nel prato.
       </p>
 
       <div class="steps">
@@ -446,7 +450,7 @@
         <div class="step">
           <span class="num">3</span>
           <strong>Arrivi</strong>
-          <p>All'ingresso paghi e ti verrà consegnato il braccialetto da mettere al polso.</p>
+          <p>All'ingresso fai check-in e ti verrà consegnato il braccialetto da mettere al polso.</p>
         </div>
       </div>
     </div>
@@ -467,7 +471,7 @@
 
           <div class="form-row">
             <label class="lbl" for="name">Nome o nick<span class="req">*</span></label>
-            <input type="text" id="name" name="name" required placeholder="Come ti chiami / vuoi essere chiamatə">
+            <input type="text" id="name" name="name" required placeholder="Come ti chiami / vuoi essere chiamat*">
           </div>
 
           <div class="form-row">
@@ -512,9 +516,12 @@
             <div class="hint">Eventuali prezzi sono indicativi e si saldano sul posto.</div>
           </div>
 
+          <!-- Sezione "A cosa sei interessat*" nascosta: i check non venivano
+               salvati a DB, quindi inutili. Riattivare solo dopo aver aggiunto
+               la persistenza (raccolta in iscrizione.js + colonna su iscrizioni).
           <hr class="divider">
 
-          <h2 class="h-2" style="margin-bottom:14px;">A cosa sei interessatə</h2>
+          <h2 class="h-2" style="margin-bottom:14px;">A cosa sei interessat*</h2>
           <p class="dim" style="margin-bottom:18px;">Aiuta a costruire il palinsesto. Non vincolante.</p>
 
           <div class="form-row">
@@ -527,14 +534,17 @@
               <label><input type="checkbox" name="interests" value="volunteer"> dare una mano</label>
             </div>
           </div>
+          -->
+
+          <hr class="divider">
 
           <div class="form-row">
-            <label class="lbl" for="diet">Allergie / regime alimentare</label>
-            <input type="text" id="diet" name="diet" placeholder="vegano, glutine, lattosio, …">
+            <label class="lbl" for="diet">Note</label>
+            <input type="text" id="diet" name="diet" placeholder="">
           </div>
 
           <div class="form-row">
-            <label class="lbl" for="notes">Note libere</label>
+            <label class="lbl" for="notes">Richieste Aggiuntive</label>
             <textarea id="notes" name="notes" placeholder="Arrivo in bici, porto un cane, posso aiutare al banco bevande, ecc."></textarea>
           </div>
 
@@ -545,13 +555,13 @@
             </label>
             <label class="consent-row" for="privacy">
               <input type="checkbox" id="privacy" class="consent-check" required>
-              <span>Ho letto l'<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati personali per la gestione dell'iscrizione.<span class="req">*</span></span>
+              <span>Ho letto l'<a href="privacy-iscrizione.html" target="_blank" rel="noopener">informativa privacy per l'iscrizione</a> e acconsento al trattamento dei miei dati personali per la gestione dell'iscrizione.<span class="req">*</span></span>
             </label>
           </div>
 
           <div class="submit-row">
             <button type="submit" class="btn accent">Iscrivimi <span class="arr">→</span></button>
-            <span class="dim mono" style="font-size:12px;">riceverai email di conferma con istruzioni di pagamento</span>
+            <span class="dim mono" style="font-size:12px;">riceverai email di conferma con le istruzioni</span>
           </div>
 
           <div class="form-msg" id="form-msg"></div>
@@ -561,10 +571,9 @@
         <div>
           <div class="price-card">
             <div class="mono" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-bottom:10px;">riepilogo</div>
-            <h3>Il tuo conto</h3>
 
             <div class="price-line">
-              <span class="lab">Biglietto minimo</span>
+              <span class="lab">Ingresso</span>
               <span class="val" id="riepilogo-ticket">5 €</span>
             </div>
             <div class="price-line">
@@ -576,13 +585,8 @@
               <span class="val" id="riepilogo-meals">0</span>
             </div>
 
-            <div class="price-total">
-              <span class="lab">Totale</span>
-              <span class="val" id="riepilogo-total">5 €</span>
-            </div>
-
             <p class="info-line">
-              Eventuali pasti a pagamento si saldano sul posto.
+              Consumazioni e pasti si saldano sul posto.
             </p>
           </div>
 

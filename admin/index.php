@@ -179,7 +179,7 @@ admin_layout_open('Dashboard', 'dashboard');
   </section>
 
 <?php else: ?>
-  <header class="page-head"><h1>Benvenutə</h1></header>
+  <header class="page-head"><h1>Benvenut*</h1></header>
   <p>Nessuna edizione presente. Vai su <a href="/admin/editions.php">Edizioni</a> per crearne una.</p>
 <?php endif; ?>
 

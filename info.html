@@ -79,6 +79,7 @@
     }
 
     /* Tessera a foratura — illustrazione */
+    .punchcard-wrap[hidden] { display: none; }
     .punchcard-wrap {
       background: var(--ink);
       color: var(--cream);
@@ -149,6 +150,7 @@
     .sleep-card.kind-camping  { background: var(--grass-1); }
     .sleep-card.kind-indoor   { background: var(--sky-1); }
     .sleep-card.kind-offsite  { background: var(--cream); border-style: dashed; }
+    .sleep-card.kind-other    { background: var(--sun); }
     .sleep-icon {
       width: 90px; height: 90px;
       display: flex; align-items: center; justify-content: center;
@@ -161,6 +163,8 @@
       border-radius: 999px;
     }
     .sleep-card.kind-offsite .sleep-tag { background: var(--ink-dim); }
+    .sleep-card.sold-out { opacity: .5; filter: grayscale(.4); }
+    .sleep-card.sold-out .sleep-tag { background: var(--hot); }
 
     /* contatti */
     .contact-grid {
@@ -484,7 +488,7 @@
       <div class="food-grid" id="food-grid"></div>
 
       <!-- Tessera a foratura -->
-      <div class="punchcard-wrap">
+      <div class="punchcard-wrap" hidden>
         <div class="punchcard" aria-hidden="true">
           <h4>/RooT-Camp · tessera</h4>
           <div class="pc-sub">10 fori · prepagata</div>
@@ -515,7 +519,7 @@
         </div>
       </div>
 
-      <p class="dim" style="margin-top:32px;font-size:14px;">
+      <p class="dim" style="margin-top:32px;font-size:14px;" hidden>
         Allergie, intolleranze, regimi alimentari? È un campeggio nerd non un ristorante, cerchiamo di venirci in contro eh.
       </p>
     </div>
@@ -526,7 +530,7 @@
     <div class="wrap">
       <div class="sec-eyebrow">03 · dormire</div>
       <h2 class="h-1" style="max-width:22ch;">
-        Tre modi di passare <em class="hand" style="font-style:normal;color:var(--hot);">la notte</em>.
+        Due modi di passare <em class="hand" style="font-style:normal;color:var(--hot);">la notte</em>.
       </h2>
       <p class="lede">
         Il prato è grande. La tua tenda è benvenuta.
@@ -549,7 +553,7 @@
         Scrivici dove ti trovi <em class="hand" style="font-style:normal;color:var(--hot);">meglio</em>.
       </h2>
       <p class="lede">
-        Per domande pratiche, proposte di talk, dubbi sulle tessere o per chiedere "ma posso portare il cane?". (Sì, se è educato.)
+        Per domande pratiche, proposte di talk, dubbi o per chiedere "ma posso portare il cane?". (Sì, se è educato.)
       </p>
 
       <div class="contact-grid" id="contact-grid"></div>

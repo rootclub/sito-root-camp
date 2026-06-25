@@ -146,6 +146,7 @@ CREATE TABLE organizers (
   edition_id     INT UNSIGNED      NOT NULL,
   name           VARCHAR(160)      NOT NULL,
   role           VARCHAR(160)      DEFAULT NULL,
+  photo_url      VARCHAR(255)      DEFAULT NULL,
   is_placeholder TINYINT(1)        NOT NULL DEFAULT 0,
   link_url       VARCHAR(255)      DEFAULT NULL,
   sort           SMALLINT UNSIGNED NOT NULL DEFAULT 0,
@@ -208,6 +209,9 @@ CREATE TABLE sleep_options (
   title        VARCHAR(120)      NOT NULL,
   body         TEXT              NOT NULL,
   price_eur    SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  -- is_available qui significa "selezionabile/prenotabile dal cliente":
+  -- l'opzione è SEMPRE mostrata nel form, ma se 0 appare come "Esaurito"
+  -- e non è selezionabile.
   is_available TINYINT(1)        NOT NULL DEFAULT 1,
   sort         SMALLINT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
@@ -245,6 +249,7 @@ CREATE TABLE iscrizioni (
   name          VARCHAR(160)      NOT NULL,
   email         VARCHAR(180)      NOT NULL,
   phone         VARCHAR(40)       DEFAULT NULL,
+  age           ENUM('adult','minor') NOT NULL DEFAULT 'adult',
   sleep_kind    VARCHAR(40)       NOT NULL DEFAULT 'camping',
   n_cards       TINYINT UNSIGNED  NOT NULL DEFAULT 0,
   ticket_eur    SMALLINT UNSIGNED NOT NULL DEFAULT 15,

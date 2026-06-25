@@ -53,7 +53,7 @@ window.TAB_PARTIALS = {
               <h4 style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;opacity:.7;">Scrivici</h4>
               <div style="display:grid;gap:8px;">
                 ${e.contacts.email    ? `<a href="mailto:${e.contacts.email}">${e.contacts.email}</a>` : ''}
-                ${e.contacts.matrix   ? `<a href="#">matrix · ${e.contacts.matrix}</a>` : ''}
+                ${e.contacts.matrix   ? `<a href="https://bsky.app/profile/${e.contacts.matrix.replace(/^@/, '')}" target="_blank" rel="noopener">bluesky · ${e.contacts.matrix}</a>` : ''}
                 ${e.contacts.telegram ? `<a href="${/^https?:\/\//.test(e.contacts.telegram) ? e.contacts.telegram : `https://t.me/${e.contacts.telegram.replace(/^@/, '')}`}" target="_blank" rel="noopener">telegram · ${e.contacts.telegram}</a>` : ''}
                 ${e.contacts.mastodon ? `<a href="#">mastodon · ${e.contacts.mastodon}</a>` : ''}
               </div>

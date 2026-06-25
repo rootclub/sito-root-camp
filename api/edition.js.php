@@ -107,10 +107,11 @@ function build_edition_payload(int $edId): ?array
     }
 
     // Organizers
-    $stmt = db()->prepare('SELECT name, role, is_placeholder, link_url FROM organizers WHERE edition_id = ? ORDER BY sort, id');
+    $stmt = db()->prepare('SELECT name, role, photo_url, is_placeholder, link_url FROM organizers WHERE edition_id = ? ORDER BY sort, id');
     $stmt->execute([$edId]);
     $organizers = array_map(function ($o) {
         $out = ['name' => (string)$o['name'], 'role' => (string)($o['role'] ?? '')];
+        if (!empty($o['photo_url'])) $out['photo'] = (string)$o['photo_url'];
         if (!empty($o['is_placeholder'])) $out['placeholder'] = true;
         if (!empty($o['link_url'])) $out['link'] = (string)$o['link_url'];
         return $out;
@@ -143,10 +144,11 @@ function build_edition_payload(int $edId): ?array
         'note'  => (string)($f['note'] ?? ''),
     ], $stmt->fetchAll());
 
-    // Sleep options (solo quelle disponibili)
+    // Sleep options: le mostriamo TUTTE. is_available qui indica la
+    // selezionabilità: se 0 l'opzione appare ma come "Esaurito" (non prenotabile).
     $stmt = db()->prepare(
-        'SELECT kind, title, body, price_eur FROM sleep_options
-          WHERE edition_id = ? AND is_available = 1 ORDER BY sort, id'
+        'SELECT kind, title, body, price_eur, is_available FROM sleep_options
+          WHERE edition_id = ? ORDER BY sort, id'
     );
     $stmt->execute([$edId]);
     $sleepOpts = array_map(fn($s) => [
@@ -154,6 +156,7 @@ function build_edition_payload(int $edId): ?array
         'title' => (string)$s['title'],
         'body'  => (string)$s['body'],
         'price_eur' => (int)$s['price_eur'],
+        'available' => !empty($s['is_available']),
     ], $stmt->fetchAll());
 
     // Meal slots (solo quelli disponibili). Tabella opzionale: se la migration

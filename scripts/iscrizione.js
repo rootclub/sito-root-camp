@@ -17,21 +17,25 @@
   const sleepMount = document.getElementById('sleep-options');
   const sleepOpts = (ed.sleep && ed.sleep.options) || [];
   if (sleepMount) {
-    sleepMount.innerHTML = sleepOpts.map((o, i) => {
+    sleepMount.innerHTML = sleepOpts.map((o) => {
       const price = o.price_eur || 0;
-      const label = price === 0 ? '—' : ('+' + price + ' €');
-      const cls = price === 0 ? ' free' : '';
+      // available = selezionabile. Le opzioni esaurite sono comunque mostrate,
+      // ma disabilitate e marcate "Esaurito". Il costo non viene mostrato.
+      const soldOut = o.available === false;
       return `
-        <label>
-          <input type="radio" name="sleep" value="${o.kind}" ${i === 0 ? 'checked' : ''} data-price="${price}">
+        <label class="${soldOut ? 'sold-out' : ''}">
+          <input type="radio" name="sleep" value="${o.kind}" data-price="${price}" ${soldOut ? 'disabled' : ''}>
           <div class="rc-text">
             <strong>${o.title}</strong>
             <span>${o.body}</span>
           </div>
-          <span class="rc-price${cls}">${label}</span>
+          ${soldOut ? '<span class="rc-price sold">Esaurito</span>' : ''}
         </label>
       `;
     }).join('');
+    // Preseleziona la prima opzione selezionabile (non esaurita).
+    const firstSelectable = sleepMount.querySelector('input[name="sleep"]:not([disabled])');
+    if (firstSelectable) firstSelectable.checked = true;
   }
 
   // --------- Render meal slots (raggruppati per giorno) ---------
@@ -82,9 +86,7 @@
     const total      = TICKET_EUR + sleepCost;
 
     const sleepObj = sleepOpts.find(o => o.kind === sleepKind);
-    const sleepLine = sleepObj
-      ? `${sleepObj.title} · ${sleepCost === 0 ? '—' : sleepCost + ' €'}`
-      : '—';
+    const sleepLine = sleepObj ? sleepObj.title : '—';
 
     const elTicket = document.getElementById('riepilogo-ticket');
     const elSleep = document.getElementById('riepilogo-sleep');
@@ -126,6 +128,8 @@
     const email     = document.getElementById('email').value.trim();
     const phoneEl   = document.getElementById('phone');
     const phone     = phoneEl ? phoneEl.value.trim() : '';
+    const ageEl     = document.getElementById('age');
+    const age       = ageEl ? ageEl.value : 'adult';
     const sleepKind = (document.querySelector('input[name="sleep"]:checked') || {}).value || '';
     const meals     = Array.from(document.querySelectorAll('input[name="meals"]:checked')).map(c => c.value);
     const dietEl    = document.getElementById('diet');
@@ -153,7 +157,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          name, email, phone,
+          name, email, phone, age,
           sleep_kind: sleepKind,
           meals,
           diet,

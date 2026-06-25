@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name  = post_str('name');
             $email = post_str('email');
             $phone = post_str('phone');
+            $age   = post_str('age');
             $diet  = post_str('diet');
             $notes = post_str('notes');
 
@@ -53,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($name === '' || mb_strlen($name) > 160) $errors[] = 'Nome obbligatorio (max 160).';
             if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Email non valida.';
             if (mb_strlen($phone) > 40) $errors[] = 'Telefono troppo lungo.';
+            if (!in_array($age, ['adult', 'minor'], true)) $errors[] = 'Età indicativa non valida.';
             if (mb_strlen($diet) > 255) $errors[] = 'Dieta troppo lunga (max 255).';
 
             $stmt = db()->prepare('SELECT id FROM iscrizioni WHERE id = ? AND edition_id = ? LIMIT 1');
@@ -65,11 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             db()->prepare(
-                'UPDATE iscrizioni SET name = ?, email = ?, phone = ?, diet = ?, notes = ?
+                'UPDATE iscrizioni SET name = ?, email = ?, phone = ?, age = ?, diet = ?, notes = ?
                   WHERE id = ? AND edition_id = ?'
             )->execute([
                 $name, $email,
                 $phone !== '' ? $phone : null,
+                $age,
                 $diet  !== '' ? $diet  : null,
                 $notes !== '' ? $notes : null,
                 $id, $edId
@@ -150,7 +153,7 @@ $whereSql = 'WHERE ' . implode(' AND ', $where);
 // CSV export (output prima di qualunque HTML)
 // =====================================================================
 if (get_str('format') === 'csv') {
-    $sql = "SELECT id, created_at, name, email, phone, sleep_kind, n_cards,
+    $sql = "SELECT id, created_at, name, email, phone, age, sleep_kind, n_cards,
                    ticket_eur, sleep_eur, cards_eur, total_eur,
                    checked_in, checked_in_at, diet, notes, ip
               FROM iscrizioni $whereSql ORDER BY created_at";
@@ -180,7 +183,7 @@ if (get_str('format') === 'csv') {
     // BOM UTF-8 per Excel
     fwrite($out, "\xEF\xBB\xBF");
     fputcsv($out, [
-        'id','created_at','name','email','phone','sleep_kind','meals','n_meals',
+        'id','created_at','name','email','phone','age','sleep_kind','meals','n_meals',
         'ticket_eur','sleep_eur','total_eur',
         'checked_in','checked_in_at','diet','notes','ip',
     ]);
@@ -188,6 +191,7 @@ if (get_str('format') === 'csv') {
         $mealsList = $mealsByIscr[(int)$r['id']] ?? [];
         fputcsv($out, [
             $r['id'], $r['created_at'], $r['name'], $r['email'], $r['phone'],
+            $r['age'] === 'minor' ? 'minorenne' : 'adulto',
             $r['sleep_kind'], implode(',', $mealsList), count($mealsList),
             $r['ticket_eur'], $r['sleep_eur'], $r['total_eur'],
             $r['checked_in'] ? 'yes' : 'no', $r['checked_in_at'],
@@ -317,12 +321,19 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
           <span class="field-label">Telefono</span>
           <input type="text" name="phone" value="<?= e((string)$detail['phone']) ?>" maxlength="40">
         </label>
+        <label class="field">
+          <span class="field-label">Età indicativa</span>
+          <select name="age">
+            <option value="adult"<?= ($detail['age'] ?? 'adult') === 'adult' ? ' selected' : '' ?>>adulto</option>
+            <option value="minor"<?= ($detail['age'] ?? '') === 'minor' ? ' selected' : '' ?>>minorenne accompagnato</option>
+          </select>
+        </label>
         <label class="field field-full">
-          <span class="field-label">Allergie / dieta</span>
+          <span class="field-label">Note</span>
           <input type="text" name="diet" value="<?= e((string)($detail['diet'] ?? '')) ?>" maxlength="255">
         </label>
         <label class="field field-full">
-          <span class="field-label">Note interne</span>
+          <span class="field-label">Richieste Aggiuntive</span>
           <textarea name="notes" rows="3"><?= e((string)$detail['notes']) ?></textarea>
         </label>
         <div class="form-actions">
@@ -492,6 +503,7 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
           <th>Email</th>
           <th>Sleep</th>
           <th>Pasti</th>
+          <th>Note</th>
           <th>€</th>
           <th>Check-in</th>
           <th style="width:130px;text-align:right;">Azioni</th>
@@ -510,6 +522,17 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
             <td class="small"><?= e($r['email']) ?></td>
             <td class="small"><?= e($r['sleep_kind']) ?></td>
             <td class="mono"><?= (int)($r['n_meals'] ?? 0) ?></td>
+            <td class="note-dots">
+              <?php if (!empty($r['diet'])): ?>
+                <span class="note-dot note-dot-diet" tabindex="0">N<span class="note-tip"><strong>Note:</strong> <?= e((string)$r['diet']) ?></span></span>
+              <?php endif; ?>
+              <?php if (!empty($r['notes'])): ?>
+                <span class="note-dot note-dot-req" tabindex="0">R<span class="note-tip"><strong>Richieste:</strong> <?= e((string)$r['notes']) ?></span></span>
+              <?php endif; ?>
+              <?php if (empty($r['diet']) && empty($r['notes'])): ?>
+                <span class="muted">—</span>
+              <?php endif; ?>
+            </td>
             <td class="mono"><strong><?= (int)$r['total_eur'] ?></strong></td>
             <td>
               <?php if ($r['checked_in']): ?>

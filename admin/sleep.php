@@ -151,7 +151,7 @@ admin_layout_open('Dormire', 'sleep');
 
       <label class="field-check">
         <input type="checkbox" name="is_available" value="1" <?= ($editing ? !empty($r['is_available']) : true) ? 'checked' : '' ?>>
-        <span>Disponibile <span class="muted">(visibile sul form di iscrizione)</span></span>
+        <span>Prenotabile <span class="muted">(l'opzione è sempre mostrata sul form; se tolti i posti, deselezionala: apparirà come "Esaurito", non selezionabile)</span></span>
       </label>
 
       <div class="form-actions">
@@ -187,7 +187,7 @@ admin_layout_open('Dormire', 'sleep');
             <div class="small" style="margin-top:4px; color: var(--ink-dim);"><?= e($r['body']) ?></div>
           </td>
           <td class="mono"><?= (int)$r['price_eur'] === 0 ? '—' : e((string)$r['price_eur']) ?></td>
-          <td><?= !empty($r['is_available']) ? '<span class="pill pill-ok">attiva</span>' : '<span class="pill pill-mute">nascosta</span>' ?></td>
+          <td><?= !empty($r['is_available']) ? '<span class="pill pill-ok">prenotabile</span>' : '<span class="pill pill-mute">esaurita</span>' ?></td>
           <td class="actions-cell">
             <form method="post" class="inline">
               <?= csrf_field() ?>
