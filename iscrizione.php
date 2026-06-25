@@ -422,6 +422,7 @@
       <rect x="500" y="500" width="200" height="80" rx="10" fill="#ffd36b" stroke="#0f2a1a" stroke-width="6"/>
     </svg>
   </template>
+  <?php require __DIR__ . '/inc/jsonld_event.php'; ?>
 </head>
 <body>
   <div data-slot="topbar"></div>
@@ -539,8 +540,17 @@
           <hr class="divider">
 
           <div class="form-row">
-            <label class="lbl" for="diet">Note</label>
-            <input type="text" id="diet" name="diet" placeholder="">
+            <label class="lbl" for="diet">Allergie / regime alimentare</label>
+            <input type="text" id="diet" name="diet" placeholder="vegano, glutine, lattosio, …">
+            <div class="hint">Facoltativo. Se lo lasci vuoto non trattiamo alcun dato sulla tua salute o dieta.</div>
+
+            <!-- Consenso art. 9 GDPR: compare SOLO se il campo allergie/dieta è valorizzato.
+                 Separato dalla presa visione, opt-in (non pre-spuntato), non condizionante
+                 l'iscrizione (chi non compila allergie/dieta non lo vede nemmeno). -->
+            <label class="consent-row consent-health" id="health-consent-row" for="health-consent" style="display:none;margin-top:14px;border:2px solid var(--ink);background:rgba(255,211,107,.18);">
+              <input type="checkbox" id="health-consent" class="consent-check">
+              <span><?= htmlspecialchars(HEALTH_CONSENT_TEXT, ENT_QUOTES, 'UTF-8') ?></span>
+            </label>
           </div>
 
           <div class="form-row">
@@ -551,11 +561,11 @@
           <div class="form-row">
             <label class="consent-row" for="agree">
               <input type="checkbox" id="agree" class="consent-check" required>
-              <span>Ho letto il <a href="regolamento.html" target="_blank" rel="noopener">regolamento</a> e accetto le condizioni.<span class="req">*</span></span>
+              <span>Ho letto il <a href="regolamento.php" target="_blank" rel="noopener">regolamento</a> e accetto le condizioni.<span class="req">*</span></span>
             </label>
             <label class="consent-row" for="privacy">
               <input type="checkbox" id="privacy" class="consent-check" required>
-              <span>Ho letto l'<a href="privacy-iscrizione.html" target="_blank" rel="noopener">informativa privacy per l'iscrizione</a> e acconsento al trattamento dei miei dati personali per la gestione dell'iscrizione.<span class="req">*</span></span>
+              <span>Dichiaro di aver preso visione dell'<a href="privacy.php" target="_blank" rel="noopener">informativa privacy</a>.<span class="req">*</span></span>
             </label>
           </div>
 

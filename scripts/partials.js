@@ -5,7 +5,7 @@ window.TAB_PARTIALS = {
     return `
       <header class="topbar">
         <div class="wrap topbar-inner">
-          <a href="index.html" class="brand">
+          <a href="index.php" class="brand">
             <span class="tabkey">/RooT-Camp</span>
             <span class="meta">2026</span>
           </a>
@@ -13,12 +13,12 @@ window.TAB_PARTIALS = {
             <span></span><span></span><span></span>
           </button>
           <nav class="nav" id="site-nav">
-            <a href="index.html"       ${active==='home'?'class="active"':''}>home</a>
-            <a href="palinsesto.html"  ${active==='palinsesto'?'class="active"':''}>palinsesto</a>
-            <a href="info.html"        ${active==='info'?'class="active"':''}>info pratiche</a>
-            <a href="regolamento.html" ${active==='regolamento'?'class="active"':''}>regolamento</a>
-            <a href="archivio.html"    ${active==='archivio'?'class="active"':''}>archivio</a>
-            <a href="iscrizione.html"  class="cta ${active==='iscrizione'?'active':''}">iscriviti →</a>
+            <a href="index.php"       ${active==='home'?'class="active"':''}>home</a>
+            <a href="palinsesto.php"  ${active==='palinsesto'?'class="active"':''}>palinsesto</a>
+            <a href="info.php"        ${active==='info'?'class="active"':''}>info pratiche</a>
+            <a href="regolamento.php" ${active==='regolamento'?'class="active"':''}>regolamento</a>
+            <a href="archivio.php"    ${active==='archivio'?'class="active"':''}>archivio</a>
+            <a href="iscrizione.php"  class="cta ${active==='iscrizione'?'active':''}">iscriviti →</a>
           </nav>
         </div>
       </header>
@@ -40,13 +40,13 @@ window.TAB_PARTIALS = {
             <div>
               <h4 style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;opacity:.7;">Naviga</h4>
               <div style="display:grid;gap:8px;">
-                <a href="index.html">Home</a>
-                <a href="palinsesto.html">Palinsesto</a>
-                <a href="info.html">Info pratiche</a>
-                <a href="regolamento.html">Regolamento</a>
-                <a href="iscrizione.html">Iscrizione</a>
-                <a href="archivio.html">Archivio</a>
-                <a href="privacy.html">Privacy</a>
+                <a href="index.php">Home</a>
+                <a href="palinsesto.php">Palinsesto</a>
+                <a href="info.php">Info pratiche</a>
+                <a href="regolamento.php">Regolamento</a>
+                <a href="iscrizione.php">Iscrizione</a>
+                <a href="archivio.php">Archivio</a>
+                <a href="privacy.php">Privacy</a>
               </div>
             </div>
             <div>

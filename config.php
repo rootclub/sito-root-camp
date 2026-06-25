@@ -33,6 +33,28 @@ define('APP_TIMEZONE',     env('APP_TIMEZONE', 'Europe/Rome'));
 define('SESSION_LIFETIME', (int)env('SESSION_LIFETIME', '7200'));
 define('SETUP_TOKEN',      (string)env('SETUP_TOKEN', ''));
 
+// --- Privacy / consensi ---
+// Versione (data di entrata in vigore) dell'informativa privacy. Deve coincidere
+// con la dicitura mostrata in fondo a privacy.php. Salvata su ogni iscrizione
+// per assolvere l'onere della prova ex art. 7.1 GDPR.
+define('PRIVACY_VERSION', '2026-06-17');
+define('PRIVACY_VERSION_LABEL', '17 giugno 2026');
+
+// Testo esatto della casella di consenso al trattamento dei dati relativi alla
+// salute / regime alimentare (categorie particolari, art. 9 GDPR). Sorgente unica:
+// viene mostrato accanto alla checkbox in iscrizione.php / modifica.php E salvato
+// verbatim a DB al momento del consenso (onere della prova, art. 7.1). Non fidarsi
+// mai del testo inviato dal client: si salva sempre questa costante.
+define('HEALTH_CONSENT_TEXT',
+    'Acconsento al trattamento delle informazioni su allergie e/o regime alimentare '
+    . 'che ho indicato, che costituiscono categorie particolari di dati personali ai sensi '
+    . 'dell\'art. 9 del GDPR, al solo fine di garantire la sicurezza alimentare e '
+    . 'l\'organizzazione del catering durante l\'evento. Il conferimento è facoltativo; '
+    . 'questi dati sono cancellati al termine dell\'evento e posso revocare il consenso in '
+    . 'qualsiasi momento, con la stessa facilità con cui lo presto, scrivendo a '
+    . 'presidente@rootclub.it.'
+);
+
 date_default_timezone_set(APP_TIMEZONE);
 
 // --- Database ---

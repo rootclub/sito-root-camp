@@ -155,7 +155,8 @@ $whereSql = 'WHERE ' . implode(' AND ', $where);
 if (get_str('format') === 'csv') {
     $sql = "SELECT id, created_at, name, email, phone, age, sleep_kind, n_cards,
                    ticket_eur, sleep_eur, cards_eur, total_eur,
-                   checked_in, checked_in_at, diet, notes, ip
+                   checked_in, checked_in_at, diet, notes, ip,
+                   privacy_consent_at, privacy_version, health_consent_at
               FROM iscrizioni $whereSql ORDER BY created_at";
     $stmt = db()->prepare($sql);
     $stmt->execute($args);
@@ -186,6 +187,7 @@ if (get_str('format') === 'csv') {
         'id','created_at','name','email','phone','age','sleep_kind','meals','n_meals',
         'ticket_eur','sleep_eur','total_eur',
         'checked_in','checked_in_at','diet','notes','ip',
+        'privacy_consent_at','privacy_version','health_consent_at',
     ]);
     while ($r = $stmt->fetch()) {
         $mealsList = $mealsByIscr[(int)$r['id']] ?? [];
@@ -196,6 +198,7 @@ if (get_str('format') === 'csv') {
             $r['ticket_eur'], $r['sleep_eur'], $r['total_eur'],
             $r['checked_in'] ? 'yes' : 'no', $r['checked_in_at'],
             $r['diet'], $r['notes'], $r['ip'],
+            $r['privacy_consent_at'], $r['privacy_version'], $r['health_consent_at'],
         ]);
     }
     fclose($out);
@@ -417,6 +420,31 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
         <?php if (!empty($detail['ip'])): ?>
           <dt>IP iscrizione</dt>
           <dd class="small mono"><?= e($detail['ip']) ?></dd>
+        <?php endif; ?>
+
+        <dt>Presa visione privacy</dt>
+        <dd class="small mono">
+          <?php if (!empty($detail['privacy_consent_at'])): ?>
+            <?= e(date('d/m/Y H:i', strtotime((string)$detail['privacy_consent_at']))) ?>
+            <?php if (!empty($detail['privacy_version'])): ?>
+              <span class="muted">(v. <?= e((string)$detail['privacy_version']) ?>)</span>
+            <?php endif; ?>
+          <?php else: ?>
+            <span class="muted">non registrata</span>
+          <?php endif; ?>
+        </dd>
+
+        <?php if (!empty($detail['health_consent_at'])): ?>
+          <dt>Consenso dati salute/dieta <span class="muted small">(art. 9)</span></dt>
+          <dd class="small">
+            <span class="mono"><?= e(date('d/m/Y H:i', strtotime((string)$detail['health_consent_at']))) ?></span>
+            <?php if (!empty($detail['health_consent_text'])): ?>
+              <details style="margin-top:6px;">
+                <summary class="muted" style="cursor:pointer;">testo del consenso prestato</summary>
+                <p class="small" style="margin-top:6px;white-space:pre-wrap;"><?= e((string)$detail['health_consent_text']) ?></p>
+              </details>
+            <?php endif; ?>
+          </dd>
         <?php endif; ?>
       </dl>
     </article>

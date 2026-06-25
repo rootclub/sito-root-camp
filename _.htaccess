@@ -7,3 +7,9 @@ Options -Indexes
 <FilesMatch "^(\.env|\.env\.example|\.deploy-config|.*\.sql|.*\.log|.*\.sqlite|CLAUDE\.md)$">
     Require all denied
 </FilesMatch>
+
+# Compat URL: le vecchie .html già indicizzate vengono servite dalle nuove .php
+# senza redirect visibile. Mantiene il JSON-LD server-side anche per chi atterra
+# da un risultato di ricerca con l'URL legacy.
+RewriteEngine On
+RewriteRule ^(index|palinsesto|info|iscrizione|regolamento|archivio|privacy)\.html$ $1.php [L]
