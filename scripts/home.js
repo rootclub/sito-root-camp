@@ -2,6 +2,61 @@
 (function () {
   window.TAB_mountPartials('home');
 
+  // Spot radio: toggle play/stop sul floater nella hero
+  (function () {
+    const btn = document.getElementById('radioToggle');
+    const img = document.getElementById('radioImg');
+    const audio = document.getElementById('radioAudio');
+    if (!btn || !img || !audio) return;
+
+    function setPlaying(on) {
+      img.src = on ? 'assets/radio_on.png' : 'assets/radio_off.png';
+      btn.classList.toggle('is-playing', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+
+    // Mobile Chrome ignora il preload e bufferizza solo una frazione del file:
+    // scarichiamo l'intero mp3 in memoria (blob) al primo tocco sulla pagina,
+    // così la riproduzione parte subito e non va in underrun.
+    let primed = false;
+    let blobUrl = null;
+    function prime() {
+      if (primed) return;
+      primed = true;
+      fetch('assets/spot_radio.mp3')
+        .then((r) => r.blob())
+        .then((b) => { blobUrl = URL.createObjectURL(b); })
+        .catch(() => {});
+    }
+    document.addEventListener('pointerdown', prime, { once: true, passive: true });
+    document.addEventListener('touchstart', prime, { once: true, passive: true });
+
+    // Lock anti-evento-duplicato: su Chrome Android un tap su un elemento in
+    // movimento (il box ha un'animazione CSS) può generare un secondo click
+    // sintetico che ferma l'audio appena avviato. Ignoriamo i click ravvicinati.
+    let lockUntil = 0;
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const now = e.timeStamp || performance.now();
+      if (now < lockUntil) return;
+      lockUntil = now + 600;
+      prime();
+      if (audio.paused) {
+        // Usa la sorgente completamente bufferizzata, se pronta.
+        if (blobUrl && audio.src !== blobUrl) audio.src = blobUrl;
+        const p = audio.play();
+        if (p && p.then) p.then(() => setPlaying(true)).catch(() => setPlaying(false));
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
+
+    audio.addEventListener('play', () => setPlaying(true));
+    audio.addEventListener('pause', () => setPlaying(false));
+    audio.addEventListener('ended', () => setPlaying(false));
+  })();
+
   // Etichetta prezzo biglietto dal DB (meta.php → tickets.price)
   const ticketPrice = (window.TAB_CURRENT_EDITION && window.TAB_CURRENT_EDITION.tickets && window.TAB_CURRENT_EDITION.tickets.price) || '';
   document.querySelectorAll('[data-ticket-price]').forEach(el => { el.textContent = ticketPrice; });
