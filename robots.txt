@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /inc/
+Disallow: /bin/
+Disallow: /modifica.php
+Disallow: /*standalone
+
+Sitemap: https://rootcamp.rootclub.it/sitemap.xml

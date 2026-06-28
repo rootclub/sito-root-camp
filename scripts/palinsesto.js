@@ -1,6 +1,7 @@
 // Palinsesto — render lista per giorno + filtri + descrizione espandibile
 (function () {
   window.TAB_mountPartials('palinsesto');
+  if (window.TAB_injectScheduleJsonLd) window.TAB_injectScheduleJsonLd();
 
   const ed = window.TAB_CURRENT_EDITION;
   const mount = document.getElementById('schedule-mount');

@@ -1,6 +1,7 @@
 // Homepage: marquee, preview palinsesto, orgs
 (function () {
   window.TAB_mountPartials('home');
+  if (window.TAB_injectEventJsonLd) window.TAB_injectEventJsonLd();
 
   // Spot radio: toggle play/stop sul floater nella hero
   (function () {
