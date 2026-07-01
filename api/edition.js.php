@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../inc/db.php';
 require_once __DIR__ . '/../inc/edition.php';
+require_once __DIR__ . '/../inc/tshirt.php';
 require_once __DIR__ . '/../inc/response.php';
 
 // =====================================================================
@@ -39,6 +40,26 @@ function build_edition_payload(int $edId): ?array
             array_map('trim', preg_split('/\r\n|\r|\n/', (string)$ed['marquee_words'])),
             fn($s) => $s !== ''
         ));
+    }
+
+    // Maglietta evento. Colonne potenzialmente assenti se la migration non è
+    // stata applicata: in tal caso enabled resta false e la sezione non compare.
+    $tshirtSizes = [];
+    foreach (TSHIRT_SIZES as $code => $label) {
+        $tshirtSizes[] = ['code' => $code, 'label' => $label];
+    }
+    $tshirt = [
+        'enabled'    => false,
+        'photo'      => '',
+        'intro'      => '',
+        'priceLabel' => '',
+        'sizes'      => $tshirtSizes,
+    ];
+    if (array_key_exists('tshirt_enabled', $ed)) {
+        $tshirt['enabled']    = !empty($ed['tshirt_enabled']);
+        $tshirt['photo']      = (string)($ed['tshirt_photo_url'] ?? '');
+        $tshirt['intro']      = (string)($ed['tshirt_intro'] ?? '');
+        $tshirt['priceLabel'] = (string)($ed['tshirt_price_label'] ?? '');
     }
 
     // Tracks: id => position + lista per nome.
@@ -231,6 +252,7 @@ function build_edition_payload(int $edId): ?array
         'meals' => [
             'slots' => $mealSlots,
         ],
+        'tshirt' => $tshirt,
         'schedule' => [
             'days' => array_values($days),
         ],

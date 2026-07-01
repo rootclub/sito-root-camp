@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/inc/db.php';
 require_once __DIR__ . '/inc/edition.php';
+require_once __DIR__ . '/inc/tshirt.php';
 require_once __DIR__ . '/inc/response.php';
 
 // =====================================================================
@@ -78,6 +79,7 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $sleepKind = isset($_POST['sleep_kind']) && is_string($_POST['sleep_kind']) ? trim($_POST['sleep_kind']) : '';
     $diet  = isset($_POST['diet'])  && is_string($_POST['diet'])  ? trim($_POST['diet'])  : '';
     $notes = isset($_POST['notes']) && is_string($_POST['notes']) ? trim($_POST['notes']) : '';
+    $tshirtSize = isset($_POST['tshirt_size']) && is_string($_POST['tshirt_size']) ? trim($_POST['tshirt_size']) : '';
 
     $mealsRaw = $_POST['meals'] ?? [];
     if (!is_array($mealsRaw)) $mealsRaw = [];
@@ -127,6 +129,14 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (count($newMealIds) > 50) $errors[] = 'Troppi pasti selezionati.';
 
+    // Maglietta (opzionale). Se non abilitata per l'edizione, ignora il valore.
+    $tshirtEnabled = !empty($edition['tshirt_enabled'] ?? 0);
+    if (!$tshirtEnabled) {
+        $tshirtSize = '';
+    } elseif ($tshirtSize !== '' && !tshirt_size_valid($tshirtSize)) {
+        $errors[] = 'Taglia maglietta non valida.';
+    }
+
     if (!$errors) {
         $sleepEur  = $availSleep[$sleepKind];
         $ticketEur = (int)$iscrizione['ticket_eur']; // mantieni il prezzo storico
@@ -136,12 +146,12 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             db_tx(function (PDO $pdo) use (
                 $iscrizione, $phone, $age, $sleepKind, $sleepEur, $totalEur,
-                $diet, $notes, $newMealIds
+                $diet, $notes, $tshirtSize, $newMealIds
             ) {
                 $pdo->prepare(
                     'UPDATE iscrizioni
                         SET phone = ?, age = ?, sleep_kind = ?, sleep_eur = ?, total_eur = ?,
-                            diet = ?, notes = ?
+                            diet = ?, notes = ?, tshirt_size = ?
                       WHERE id = ?'
                 )->execute([
                     $phone !== '' ? $phone : null,
@@ -149,6 +159,7 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sleepKind, $sleepEur, $totalEur,
                     $diet  !== '' ? $diet  : null,
                     $notes !== '' ? $notes : null,
+                    $tshirtSize !== '' ? $tshirtSize : null,
                     (int)$iscrizione['id'],
                 ]);
 
@@ -183,8 +194,12 @@ if ($iscrizione && $edition && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['sleep_kind'] = (string)($iscrizione['sleep_kind'] ?? '');
         $_POST['diet']       = (string)($iscrizione['diet'] ?? '');
         $_POST['notes']      = (string)($iscrizione['notes'] ?? '');
+        $_POST['tshirt_size']= (string)($iscrizione['tshirt_size'] ?? '');
     }
 }
+
+// Maglietta abilitata per questa edizione?
+$tshirtEnabled = $edition ? !empty($edition['tshirt_enabled'] ?? 0) : false;
 
 // ---- Helpers locali ----
 function mh(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
@@ -354,6 +369,26 @@ ksort($mealsByDay);
       top: -3px; left: 2px;
     }
 
+    .tshirt-wrap { display: grid; grid-template-columns: minmax(0, 200px) 1fr; gap: 22px; align-items: start; }
+    @media (max-width: 560px) { .tshirt-wrap { grid-template-columns: 1fr; } }
+    .tshirt-photo {
+      border: 2px solid var(--ink); border-radius: var(--r-md); background: var(--cream);
+      box-shadow: 3px 3px 0 var(--ink); overflow: hidden; aspect-ratio: 1 / 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tshirt-photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .size-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; }
+    .size-grid label {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px 6px; border: 2px solid var(--ink); border-radius: var(--r-sm);
+      cursor: pointer; background: var(--cream);
+      font-family: var(--font-ui); font-weight: 700; font-size: 14px; text-align: center;
+    }
+    .size-grid label:has(input:checked) { background: var(--hot); color: var(--cream); }
+    .size-grid label.size-none { grid-column: 1 / -1; font-weight: 600; }
+    .size-grid label.size-none:has(input:checked) { background: var(--ink); }
+    .size-grid input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+
     .alert { padding: 16px 18px; border-radius: var(--r-md); margin-bottom: 22px; font-family: var(--font-ui); font-size: 14px; line-height: 1.5; }
     .alert.error   { background: #ffe0d6; border: 2px solid var(--hot);     color: var(--hot); }
     .alert.success { background: var(--grass-1); border: 2px solid var(--grass-3); }
@@ -493,6 +528,43 @@ ksort($mealsByDay);
             </div>
           <?php endif; ?>
         </div>
+
+        <?php if ($tshirtEnabled): $curSize = (string)($_POST['tshirt_size'] ?? ''); ?>
+          <hr class="divider">
+
+          <h2 class="h-2" style="margin-bottom:14px;">Maglietta dell'evento</h2>
+          <?php if (!empty($edition['tshirt_intro'])): ?>
+            <p class="dim" style="margin-bottom:18px;"><?= mh((string)$edition['tshirt_intro']) ?></p>
+          <?php endif; ?>
+
+          <div class="form-row">
+            <div class="tshirt-wrap">
+              <?php if (!empty($edition['tshirt_photo_url'])): ?>
+                <div class="tshirt-photo">
+                  <img src="<?= mh((string)$edition['tshirt_photo_url']) ?>" alt="Maglietta /RooT-Camp">
+                </div>
+              <?php endif; ?>
+              <div>
+                <label class="lbl">Taglia</label>
+                <div class="size-grid">
+                  <label class="size-none">
+                    <input type="radio" name="tshirt_size" value="" <?= $curSize === '' ? 'checked' : '' ?>>
+                    <span>Nessuna / non la voglio</span>
+                  </label>
+                  <?php foreach (TSHIRT_SIZES as $code => $label): ?>
+                    <label>
+                      <input type="radio" name="tshirt_size" value="<?= mh((string)$code) ?>" <?= $curSize === (string)$code ? 'checked' : '' ?>>
+                      <span><?= mh((string)$label) ?></span>
+                    </label>
+                  <?php endforeach; ?>
+                </div>
+                <?php if (!empty($edition['tshirt_price_label'])): ?>
+                  <div class="form-row" style="margin:10px 0 0;"><span class="hint"><?= mh((string)$edition['tshirt_price_label']) ?></span></div>
+                <?php endif; ?>
+              </div>
+            </div>
+          </div>
+        <?php endif; ?>
 
         <hr class="divider">
 

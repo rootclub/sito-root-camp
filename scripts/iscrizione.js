@@ -77,6 +77,48 @@
     }
   }
 
+  // --------- Render maglietta evento ---------
+  const tshirt = ed.tshirt || {};
+  const tshirtSection = document.getElementById('tshirt-section');
+  if (tshirtSection && tshirt.enabled) {
+    const introEl = document.getElementById('tshirt-intro');
+    if (introEl) {
+      if (tshirt.intro) introEl.textContent = tshirt.intro;
+      else introEl.style.display = 'none';
+    }
+    const photoWrap = document.getElementById('tshirt-photo');
+    const img = document.getElementById('tshirt-img');
+    if (photoWrap && img && tshirt.photo) {
+      img.src = tshirt.photo;
+      photoWrap.hidden = false;
+      setupTshirtLightbox(photoWrap, tshirt.photo);
+    }
+    const priceEl = document.getElementById('tshirt-price');
+    if (priceEl) {
+      if (tshirt.priceLabel) priceEl.textContent = tshirt.priceLabel;
+      else priceEl.style.display = 'none';
+    }
+    const sizesMount = document.getElementById('tshirt-sizes');
+    const sizes = tshirt.sizes || [];
+    if (sizesMount) {
+      const noneOpt = `
+        <label class="size-none">
+          <input type="radio" name="tshirt_size" value="" checked>
+          <span>Nessuna / non la voglio</span>
+        </label>`;
+      sizesMount.innerHTML = noneOpt + sizes.map((s) => `
+        <label>
+          <input type="radio" name="tshirt_size" value="${escapeAttr(s.code)}">
+          <span>${escapeHtml(s.label)}</span>
+        </label>
+      `).join('');
+      sizesMount.addEventListener('change', (e) => {
+        if (e.target && e.target.name === 'tshirt_size') updateRiepilogo();
+      });
+    }
+    tshirtSection.style.display = '';
+  }
+
   // --------- Riepilogo live ---------
   function updateRiepilogo() {
     const sleepEl = document.querySelector('input[name="sleep"]:checked');
@@ -96,6 +138,17 @@
     if (elSleep) elSleep.textContent = sleepLine;
     if (elMeals) elMeals.textContent = String(nMeals);
     if (elTotal) elTotal.textContent = total + ' €';
+
+    if (tshirt && tshirt.enabled) {
+      const tshirtRow = document.getElementById('riepilogo-tshirt-row');
+      const tshirtVal = document.getElementById('riepilogo-tshirt');
+      if (tshirtRow) tshirtRow.style.display = '';
+      if (tshirtVal) {
+        const code = (document.querySelector('input[name="tshirt_size"]:checked') || {}).value || '';
+        const found = code ? (tshirt.sizes || []).find((s) => s.code === code) : null;
+        tshirtVal.textContent = code ? (found ? found.label : code) : '—';
+      }
+    }
   }
   document.querySelectorAll('input[name="sleep"]').forEach(r => {
     r.addEventListener('change', updateRiepilogo);
@@ -136,6 +189,7 @@
     const diet      = dietEl ? dietEl.value.trim() : '';
     const notesEl   = document.getElementById('notes');
     const notes     = notesEl ? notesEl.value.trim() : '';
+    const tshirtSize = (document.querySelector('input[name="tshirt_size"]:checked') || {}).value || '';
     const honeypot  = (document.getElementById('hp') || {}).value || '';
     const agree     = document.getElementById('agree').checked;
     const privacy   = document.getElementById('privacy').checked;
@@ -160,6 +214,7 @@
           name, email, phone, age,
           sleep_kind: sleepKind,
           meals,
+          tshirt_size: tshirtSize,
           diet,
           notes,
           privacy_accepted: true,
@@ -207,5 +262,39 @@
     return String(s).replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[c]));
+  }
+
+  // Rende la foto maglietta cliccabile: apre una lightbox a schermo intero.
+  function setupTshirtLightbox(photoWrap, photoUrl) {
+    const box = document.getElementById('tshirt-lightbox');
+    const boxImg = document.getElementById('tshirt-lightbox-img');
+    const closeBtn = document.getElementById('tshirt-lightbox-close');
+    if (!box || !boxImg) return;
+
+    photoWrap.classList.add('zoomable');
+    photoWrap.setAttribute('role', 'button');
+    photoWrap.setAttribute('tabindex', '0');
+    photoWrap.setAttribute('aria-label', 'Ingrandisci la foto della maglietta');
+
+    function open() {
+      boxImg.src = photoUrl;
+      box.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      box.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    photoWrap.addEventListener('click', open);
+    photoWrap.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    // Click sullo sfondo (ma non sull'immagine) chiude
+    box.addEventListener('click', (e) => { if (e.target === box) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && box.classList.contains('open')) close();
+    });
   }
 })();

@@ -101,6 +101,7 @@ function mailer_send_iscrizione_confirm(array $iscrizione, array $edition): bool
     $token   = (string)($iscrizione['edit_token'] ?? '');
     $meals   = $iscrizione['meals'] ?? [];
     if (!is_array($meals)) $meals = [];
+    $tshirt  = trim((string)($iscrizione['tshirt_size'] ?? ''));
     $edName  = (string)$edition['name'];
     $when    = (string)$edition['date_label'];
     $where   = trim(((string)$edition['loc_name']) . ' · ' . ((string)$edition['loc_city']));
@@ -116,6 +117,8 @@ function mailer_send_iscrizione_confirm(array $iscrizione, array $edition): bool
     $mealsTxt = $meals
         ? implode("\n", array_map(fn($m) => "    - $m", $meals))
         : '    (nessuno selezionato)';
+
+    $tshirtTxt = $tshirt !== '' ? "  - Maglietta (taglia): $tshirt\n" : '';
 
     $editTxt = $editUrl !== ''
         ? "\nPer modificare le tue scelte (pasti, dormita, contatti) usa questo link:\n  $editUrl\n"
@@ -133,7 +136,7 @@ Riepilogo:
   - Pernotto: $sleep
   - Pasti prenotati:
 $mealsTxt
-  - Totale previsto: $total €
+$tshirtTxt  - Totale previsto: $total €
 $editTxt
 Quando arrivi al camp passa al check-in: ti consegniamo il braccialetto.
 
@@ -151,6 +154,12 @@ TXT;
     $eTotal = (string)$total;
     $eMail  = htmlspecialchars($contact, ENT_QUOTES, 'UTF-8');
     $eEdit  = htmlspecialchars($editUrl, ENT_QUOTES, 'UTF-8');
+    $eTshirt = htmlspecialchars($tshirt, ENT_QUOTES, 'UTF-8');
+
+    $tshirtHtmlRow = $tshirt !== ''
+        ? '<tr><td style="color:#6a8578;font-size:12px;text-transform:uppercase;letter-spacing:.1em;padding-bottom:4px;">Maglietta (taglia)</td></tr>'
+          . '<tr><td style="padding-bottom:14px;">' . $eTshirt . '</td></tr>'
+        : '';
 
     $eMealsHtml = $meals
         ? '<ul style="margin:0;padding-left:18px;">' . implode('', array_map(
@@ -184,6 +193,7 @@ TXT;
     <tr><td style="padding-bottom:14px;">$eSleep</td></tr>
     <tr><td style="color:#6a8578;font-size:12px;text-transform:uppercase;letter-spacing:.1em;padding-bottom:4px;">Pasti prenotati</td></tr>
     <tr><td style="padding-bottom:14px;">$eMealsHtml</td></tr>
+    $tshirtHtmlRow
     <tr><td style="color:#6a8578;font-size:12px;text-transform:uppercase;letter-spacing:.1em;padding-bottom:4px;">Totale previsto</td></tr>
     <tr><td><strong style="font-size:20px;">$eTotal &euro;</strong></td></tr>
   </table>

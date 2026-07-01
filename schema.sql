@@ -73,6 +73,13 @@ CREATE TABLE editions (
   -- Parole/frasi del marquee sotto la hero (una per riga; vuoto = default JS)
   marquee_words    TEXT              DEFAULT NULL,
 
+  -- Maglietta evento: abilitazione, foto, testo introduttivo e prezzo
+  -- (solo informativo: si salda sul posto, non entra nel totale iscrizione).
+  tshirt_enabled     TINYINT(1)      NOT NULL DEFAULT 0,
+  tshirt_photo_url   VARCHAR(255)    DEFAULT NULL,
+  tshirt_intro       TEXT            DEFAULT NULL,
+  tshirt_price_label VARCHAR(60)     DEFAULT NULL,
+
   created_at       TIMESTAMP         NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at       TIMESTAMP         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -258,6 +265,8 @@ CREATE TABLE iscrizioni (
   total_eur     SMALLINT UNSIGNED NOT NULL DEFAULT 0,
   diet          VARCHAR(255)      DEFAULT NULL,
   notes         TEXT              DEFAULT NULL,
+  -- Taglia maglietta scelta (NULL = nessuna). Codici: xs..4xl (vedi inc/tshirt.php).
+  tshirt_size   VARCHAR(8)        DEFAULT NULL,
   edit_token    CHAR(32)          NOT NULL,
   checked_in    TINYINT(1)        NOT NULL DEFAULT 0,
   checked_in_at TIMESTAMP         NULL DEFAULT NULL,

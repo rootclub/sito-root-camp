@@ -245,6 +245,89 @@
       top: -3px; left: 2px;
     }
 
+    /* maglietta evento */
+    .tshirt-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 220px) 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 620px) { .tshirt-wrap { grid-template-columns: 1fr; } }
+    .tshirt-photo {
+      border: 2px solid var(--ink);
+      border-radius: var(--r-md);
+      background: var(--cream);
+      box-shadow: 3px 3px 0 var(--ink);
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .tshirt-photo img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+    /* cursor:pointer serve anche a iOS Safari per emettere l'evento click sul div */
+    .tshirt-photo.zoomable { cursor: pointer; -webkit-tap-highlight-color: rgba(15,42,26,.15); }
+    .tshirt-photo.zoomable::after {
+      content: "⤢ tocca per ingrandire";
+      position: absolute;
+      left: 8px; right: 8px; bottom: 8px;
+      padding: 5px 8px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--ink); color: var(--cream);
+      border-radius: var(--r-sm, 8px);
+      font-size: 12px; line-height: 1; font-weight: 600;
+      pointer-events: none;
+      opacity: .9;
+    }
+    /* lightbox maglietta */
+    .tshirt-lightbox {
+      position: fixed; inset: 0; z-index: 1000;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 24px;
+      background: rgba(15, 42, 26, .82);
+      cursor: zoom-out;
+    }
+    .tshirt-lightbox.open { display: flex; }
+    .tshirt-lightbox img {
+      max-width: 100%; max-height: 100%;
+      object-fit: contain;
+      border: 2px solid var(--cream);
+      border-radius: var(--r-md);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
+    }
+    .tshirt-lightbox .tshirt-lightbox-close {
+      position: absolute; top: 16px; right: 20px;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--cream); color: var(--ink);
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      font-size: 24px; line-height: 1; cursor: pointer;
+    }
+    .size-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(76px, 1fr));
+      gap: 8px;
+    }
+    .size-grid label {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px 6px;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      background: var(--cream);
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 14px;
+      text-align: center;
+      transition: background .12s ease, transform .12s ease;
+    }
+    .size-grid label:hover { background: #fffaf0; transform: translateY(-1px); }
+    .size-grid label:has(input:checked) { background: var(--hot); color: var(--cream); }
+    .size-grid label.size-none { grid-column: 1 / -1; font-weight: 600; }
+    .size-grid label.size-none:has(input:checked) { background: var(--ink); }
+    .size-grid input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+
     /* numeric stepper for tessera */
     .stepper {
       display: inline-flex;
@@ -563,6 +646,31 @@
             <input type="text" id="diet" name="diet" placeholder="">
           </div>
 
+          <!-- Maglietta evento: mostrata solo se abilitata per l'edizione (vedi iscrizione.js) -->
+          <div id="tshirt-section" style="display:none;">
+            <hr class="divider">
+
+            <h2 class="h-2" style="margin-bottom:14px;">Maglietta dell'evento</h2>
+            <p class="dim" id="tshirt-intro" style="margin-bottom:18px;"></p>
+
+            <div class="form-row">
+              <div class="tshirt-wrap">
+                <div class="tshirt-photo" id="tshirt-photo" hidden>
+                  <img id="tshirt-img" src="" alt="Maglietta /RooT-Camp">
+                </div>
+                <div>
+                  <label class="lbl">Taglia</label>
+                  <div class="size-grid" id="tshirt-sizes">
+                    <!-- popolato da JS dai dati edizione -->
+                  </div>
+                  <div class="hint" id="tshirt-price" style="margin-top:10px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="divider">
+
           <div class="form-row">
             <label class="lbl" for="notes">Richieste Aggiuntive</label>
             <textarea id="notes" name="notes" placeholder="Arrivo in bici, porto un cane, posso aiutare al banco bevande, ecc."></textarea>
@@ -604,6 +712,10 @@
               <span class="lab">Pasti prenotati</span>
               <span class="val" id="riepilogo-meals">0</span>
             </div>
+            <div class="price-line" id="riepilogo-tshirt-row" style="display:none;">
+              <span class="lab">Maglietta</span>
+              <span class="val" id="riepilogo-tshirt">—</span>
+            </div>
 
             <p class="info-line">
               Consumazioni e pasti si saldano sul posto.
@@ -620,6 +732,12 @@
   </section>
 
   <div data-slot="footer"></div>
+
+  <!-- Lightbox foto maglietta -->
+  <div class="tshirt-lightbox" id="tshirt-lightbox" role="dialog" aria-modal="true" aria-label="Foto maglietta a schermo intero">
+    <button type="button" class="tshirt-lightbox-close" id="tshirt-lightbox-close" aria-label="Chiudi">×</button>
+    <img id="tshirt-lightbox-img" src="" alt="Maglietta /RooT-Camp">
+  </div>
 
   <script src="api/edition.js.php"></script>
   <script src="scripts/partials.js"></script>

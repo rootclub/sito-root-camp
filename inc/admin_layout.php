@@ -16,6 +16,7 @@ const ADMIN_NAV = [
     'food'        => ['Cibo & bere',  '/admin/food.php',       null],
     'meals'       => ['Pasti',        '/admin/meals.php',      null],
     'sleep'       => ['Dormire',      '/admin/sleep.php',      null],
+    'tshirt'      => ['Maglietta',    '/admin/tshirt.php',     null],
     'meta'        => ['Info edizione','/admin/meta.php',       null],
     'iscrizioni'  => ['Iscrizioni',   '/admin/iscrizioni.php', null],
     'editions'    => ['Edizioni',     '/admin/editions.php',   'admin'],

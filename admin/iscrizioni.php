@@ -6,6 +6,7 @@ require_once __DIR__ . '/../inc/db.php';
 require_once __DIR__ . '/../inc/auth.php';
 require_once __DIR__ . '/../inc/csrf.php';
 require_once __DIR__ . '/../inc/edition.php';
+require_once __DIR__ . '/../inc/tshirt.php';
 require_once __DIR__ . '/../inc/admin_helpers.php';
 require_once __DIR__ . '/../inc/admin_layout.php';
 require_once __DIR__ . '/../inc/response.php';
@@ -155,7 +156,7 @@ $whereSql = 'WHERE ' . implode(' AND ', $where);
 if (get_str('format') === 'csv') {
     $sql = "SELECT id, created_at, name, email, phone, age, sleep_kind, n_cards,
                    ticket_eur, sleep_eur, cards_eur, total_eur,
-                   checked_in, checked_in_at, diet, notes, ip
+                   checked_in, checked_in_at, diet, notes, tshirt_size, ip
               FROM iscrizioni $whereSql ORDER BY created_at";
     $stmt = db()->prepare($sql);
     $stmt->execute($args);
@@ -184,6 +185,7 @@ if (get_str('format') === 'csv') {
     fwrite($out, "\xEF\xBB\xBF");
     fputcsv($out, [
         'id','created_at','name','email','phone','age','sleep_kind','meals','n_meals',
+        'tshirt_size',
         'ticket_eur','sleep_eur','total_eur',
         'checked_in','checked_in_at','diet','notes','ip',
     ]);
@@ -193,6 +195,7 @@ if (get_str('format') === 'csv') {
             $r['id'], $r['created_at'], $r['name'], $r['email'], $r['phone'],
             $r['age'] === 'minor' ? 'minorenne' : 'adulto',
             $r['sleep_kind'], implode(',', $mealsList), count($mealsList),
+            tshirt_size_label((string)($r['tshirt_size'] ?? '')),
             $r['ticket_eur'], $r['sleep_eur'], $r['total_eur'],
             $r['checked_in'] ? 'yes' : 'no', $r['checked_in_at'],
             $r['diet'], $r['notes'], $r['ip'],
@@ -389,6 +392,11 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
         <dt>N. pasti</dt>
         <dd><strong><?= count($detailMeals) ?></strong></dd>
 
+        <?php if (!empty($detail['tshirt_size'])): ?>
+          <dt>Maglietta</dt>
+          <dd><span class="pill pill-info"><?= e(tshirt_size_label((string)$detail['tshirt_size'])) ?: e((string)$detail['tshirt_size']) ?></span></dd>
+        <?php endif; ?>
+
         <dt>Biglietto</dt>
         <dd><?= (int)$detail['ticket_eur'] ?> €</dd>
 
@@ -498,11 +506,13 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
     <table class="data-table">
       <thead>
         <tr>
+          <th style="width:56px;">ID</th>
           <th>Quando</th>
           <th>Nome</th>
           <th>Email</th>
           <th>Sleep</th>
           <th>Pasti</th>
+          <th>Maglietta</th>
           <th>Note</th>
           <th>€</th>
           <th>Check-in</th>
@@ -512,6 +522,7 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
       <tbody>
         <?php foreach ($rows as $r): ?>
           <tr>
+            <td class="mono small muted">#<?= (int)$r['id'] ?></td>
             <td class="mono small"><?= e(date('d/m H:i', strtotime((string)$r['created_at']))) ?></td>
             <td>
               <a href="?id=<?= (int)$r['id'] ?>"><strong><?= e($r['name']) ?></strong></a>
@@ -522,6 +533,14 @@ admin_layout_open($detail ? 'Iscrizione · ' . $detail['name'] : 'Iscrizioni', '
             <td class="small"><?= e($r['email']) ?></td>
             <td class="small"><?= e($r['sleep_kind']) ?></td>
             <td class="mono"><?= (int)($r['n_meals'] ?? 0) ?></td>
+            <td class="mono small">
+              <?php $tshirt = tshirt_size_label((string)($r['tshirt_size'] ?? '')); ?>
+              <?php if ($tshirt !== ''): ?>
+                <span class="pill pill-info"><?= e($tshirt) ?></span>
+              <?php else: ?>
+                <span class="muted">—</span>
+              <?php endif; ?>
+            </td>
             <td class="note-dots">
               <?php if (!empty($r['diet'])): ?>
                 <span class="note-dot note-dot-diet" tabindex="0">N<span class="note-tip"><strong>Note:</strong> <?= e((string)$r['diet']) ?></span></span>

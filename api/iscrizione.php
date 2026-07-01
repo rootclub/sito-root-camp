@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../inc/db.php';
 require_once __DIR__ . '/../inc/edition.php';
+require_once __DIR__ . '/../inc/tshirt.php';
 require_once __DIR__ . '/../inc/mailer.php';
 require_once __DIR__ . '/../inc/response.php';
 
@@ -66,6 +67,7 @@ $age       = trim((string)$get('age'));
 $sleepKind = trim((string)$get('sleep_kind'));
 $diet      = trim((string)$get('diet'));
 $notes     = trim((string)$get('notes'));
+$tshirtSize = trim((string)$get('tshirt_size'));
 
 $mealsRaw = $get('meals', []);
 if (!is_array($mealsRaw)) $mealsRaw = [];
@@ -128,6 +130,15 @@ if ($meals) {
     }
 }
 
+// Verifica taglia maglietta. Opzionale: '' = nessuna maglietta.
+// Se la prenotazione maglietta non è abilitata per l'edizione, ignora il valore.
+$tshirtEnabled = !empty($ed['tshirt_enabled'] ?? 0);
+if (!$tshirtEnabled) {
+    $tshirtSize = '';
+} elseif ($tshirtSize !== '' && !tshirt_size_valid($tshirtSize)) {
+    $errors[] = 'Taglia maglietta non valida.';
+}
+
 if ($errors) {
     json_response(['ok' => false, 'code' => 'validation_failed', 'errors' => $errors], 422);
 }
@@ -144,15 +155,15 @@ $editToken = bin2hex(random_bytes(16));
 // ---- Insert in transazione: iscrizioni + iscrizione_meals ----
 try {
     $newId = db_tx(function (PDO $pdo) use (
-        $edId, $name, $email, $phone, $age, $sleepKind, $diet, $notes,
+        $edId, $name, $email, $phone, $age, $sleepKind, $diet, $notes, $tshirtSize,
         $ticketEur, $sleepEur, $totalEur, $editToken, $meals, $mealIdsByCode
     ): int {
         $pdo->prepare(
             'INSERT INTO iscrizioni
               (edition_id, name, email, phone, age, sleep_kind, n_cards,
-               ticket_eur, sleep_eur, cards_eur, total_eur, diet, notes, edit_token,
+               ticket_eur, sleep_eur, cards_eur, total_eur, diet, notes, tshirt_size, edit_token,
                ip, user_agent, privacy_consent_at)
-             VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, 0, ?, ?, ?, ?, ?, ?, NOW())'
+             VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, NOW())'
         )->execute([
             $edId, $name, $email, $phone !== '' ? $phone : null,
             $age,
@@ -160,6 +171,7 @@ try {
             $ticketEur, $sleepEur, $totalEur,
             $diet  !== '' ? $diet  : null,
             $notes !== '' ? $notes : null,
+            $tshirtSize !== '' ? $tshirtSize : null,
             $editToken,
             client_ip(),
             substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255),
@@ -198,13 +210,14 @@ if ($meals) {
 }
 
 $iscrizione = [
-    'id'         => $newId,
-    'name'       => $name,
-    'email'      => $email,
-    'sleep_kind' => $sleepKind,
-    'total_eur'  => $totalEur,
-    'edit_token' => $editToken,
-    'meals'      => $mealLabels,
+    'id'           => $newId,
+    'name'         => $name,
+    'email'        => $email,
+    'sleep_kind'   => $sleepKind,
+    'total_eur'    => $totalEur,
+    'edit_token'   => $editToken,
+    'meals'        => $mealLabels,
+    'tshirt_size'  => tshirt_size_label($tshirtSize),
 ];
 @mailer_send_iscrizione_confirm($iscrizione, $ed);
 
